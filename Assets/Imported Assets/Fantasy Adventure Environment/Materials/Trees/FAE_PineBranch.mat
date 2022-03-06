@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: FAE_PineBranch
-  m_Shader: {fileID: -6465566751694194690, guid: 85827a98514358f438446da0fc64b0f0, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: dc1a634184354e343a9a36dd032cf2bf, type: 3}
   m_ShaderKeywords: GEOM_TYPE_LEAF _EMISSION
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 1
@@ -98,6 +98,7 @@ Material:
     m_Floats:
     - _AO: 1
     - _AmbientOcclusion: 0.5
+    - _BendingInfluence: 0
     - _BumpScale: 1
     - _Cull: 0
     - _Cutoff: 0.5
@@ -106,10 +107,12 @@ Material:
     - _DstBlend: 0
     - _FlatLighting: 0
     - _Float8: 8
+    - _GlobalWindMotion: 1
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _GradientBrightness: 1
+    - _LeafFlutter: 0.5
     - _MaskClipValue: 0.5
     - _MaxWindStrength: 1
     - _Metallic: 0
@@ -126,10 +129,13 @@ Material:
     - _TessPhongStrength: 0.5
     - _TessValue: 4
     - _Tessellation: 0.1
+    - _TransmissionAmount: 0
+    - _TransmissionSize: 1
     - _UVSec: 0
     - _UseSpeedTreeWind: 0
     - _WindAmplitudeMultiplier: 3
     - _WindQuality: 0
+    - _WindSwinging: 0
     - _WindWeight: 0.255
     - _ZWrite: 1
     - __dirty: 0

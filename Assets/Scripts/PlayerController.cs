@@ -7,18 +7,29 @@ public class PlayerController : MonoBehaviour
     public CharacterController controller;
 
     public float speed = 2.0f;
-    public float jumpSpeed = 10.0f;
+    public float jumpHeight = 3.0f;
+    public float gravity = -9.8f;
     Vector3 velocity;
+
+    public Transform groundCheck;
+    public float groundDistance = 0.4f;
+    public LayerMask groundMask;
+    bool isGrounded;
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity.y = -2f;
+        }
 
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
@@ -27,25 +38,16 @@ public class PlayerController : MonoBehaviour
 
         controller.Move(move * speed * Time.deltaTime);
 
-       /* if (Input.GetKey(KeyCode.RightArrow))
+        if (Input.GetKeyDown(KeyCode.J))
         {
-            transform.position += Vector3.right * speed * Time.deltaTime;
+            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            // isGrounded check to make only jump once stops it from jumping at all.
         }
-        if (Input.GetKey(KeyCode.LeftArrow))
-        {
-            transform.position += Vector3.left * speed * Time.deltaTime;
-        }
-        if (Input.GetKey(KeyCode.UpArrow))
-        {
-            transform.position += Vector3.forward * speed * Time.deltaTime;
-        }
-        if (Input.GetKey(KeyCode.DownArrow))
-        {
-            transform.position += Vector3.back * speed * Time.deltaTime;
-        } */
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            transform.position += Vector3.up * jumpSpeed * Time.deltaTime;
-        }
+
+
+
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
+
     }
 }
