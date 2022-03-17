@@ -16,12 +16,6 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundMask;
     bool isGrounded;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
     // Update is called once per frame
     void Update()
     {
@@ -38,16 +32,16 @@ public class PlayerController : MonoBehaviour
 
         controller.Move(move * speed * Time.deltaTime);
 
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-            // isGrounded check to make only jump once stops it from jumping at all.
-        }
-
-
-
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+
+        /* if (Input.GetKeyDown(KeyCode.J))
+          {
+              velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+              // isGrounded check to make only jump once stops it from jumping at all.
+          } */
+
+
 
     }
 }
