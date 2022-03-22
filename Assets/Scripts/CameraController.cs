@@ -19,10 +19,12 @@ public class CameraController : MonoBehaviour
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
+        
     }
 
     void Update()
     {
+       
         //The below lines of code make the camera work - the mouseX turns in the right direction at the correct speed. 
         mouseX = Input.GetAxis("Mouse X") * sensitivity;
         mouseY -= Input.GetAxis("Mouse Y") * sensitivity;

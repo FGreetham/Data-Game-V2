@@ -40,8 +40,18 @@ public class PlayerController : MonoBehaviour
               velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
               // isGrounded check to make only jump once stops it from jumping at all.
           } */
+    }
 
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        //Vector3 offset = new Vector3(0, 0f, 0);
+        Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
 
-
+        if (hit.collider.CompareTag("Movable"))
+        {
+            Debug.Log("Movable wheelbarrow");
+            //this.transform.position = hit.collider.transform.position + offset;
+            hit.collider.attachedRigidbody.velocity = pushDir * (speed/2);
+        }
     }
 }
