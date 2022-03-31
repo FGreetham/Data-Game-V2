@@ -16,6 +16,8 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundMask;
     bool isGrounded;
 
+    public Transform pushPoint;
+
     // Update is called once per frame
     void Update()
     {
@@ -35,6 +37,7 @@ public class PlayerController : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
+        Invoke("WheelbarrowPush", 0);
         /* if (Input.GetKeyDown(KeyCode.J))
           {
               velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
@@ -42,7 +45,7 @@ public class PlayerController : MonoBehaviour
           } */
     }
 
-    private void OnControllerColliderHit(ControllerColliderHit hit)
+    /*private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         //Vector3 offset = new Vector3(0, 0f, 0);
         Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
@@ -53,5 +56,38 @@ public class PlayerController : MonoBehaviour
             //this.transform.position = hit.collider.transform.position + offset;
             hit.collider.attachedRigidbody.velocity = pushDir * (speed/2);
         }
+    } */
+
+    void WheelbarrowPush()
+    {
+        float pickUpRange = 10f;
+        GameObject pushedObject;
+
+        //WHY DOES IT NOT ALLOW ME TO CHECK IF SOMETHING IS THERE?
+
+        /* if (pushedObject != null && Input.GetKeyDown(KeyCode.D)) 
+        {
+            pushedObject.transform.parent = null;
+            speed = speed * 2;
+            return;
+        } */
+
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out RaycastHit hit, pickUpRange))
+        {
+            if (hit.collider.gameObject.tag == "Movable")
+            {
+                pushedObject = hit.collider.gameObject;
+                pushedObject.transform.position = pushPoint.position;
+                pushedObject.transform.parent = pushPoint.transform;
+                pushedObject.transform.rotation = pushPoint.rotation * Quaternion.Euler(10f, 0, 0);
+
+                speed = speed / 2;
+                //Maybe add on screen text to say you have to hold the click
+
+            }
+
+        }
+
     }
 }

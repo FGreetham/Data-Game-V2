@@ -370,6 +370,20 @@ namespace PixelCrushers.DialogueSystem
         #region Show & Hide
 
         /// <summary>
+        /// Sets the panel that will receive focus for the specified subtitle.
+        /// When delaying the display of the subtitle while the main dialogue
+        /// panel is opening, we still need a reference to the subtitle panel
+        /// to handle continue button stuff once the main panel is open.
+        /// 
+        /// </summary>
+        public StandardUISubtitlePanel StageFocusedPanel(Subtitle subtitle)
+        {
+            DialogueActor dialogueActor;
+            m_focusedPanel = GetPanel(subtitle, out dialogueActor);
+            return m_focusedPanel;
+        }
+
+        /// <summary>
         /// Shows a subtitle. Opens a subtitle panel and sets the content. If the speaker
         /// has a DialogueActor component, this may dictate which panel opens.
         /// </summary>

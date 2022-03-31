@@ -1,7 +1,7 @@
 /*
 ------------------------------
   Dialogue System for Unity  
-       Version 2.2.25.1
+       Version 2.2.26
         
   Copyright © Pixel Crushers
 ------------------------------

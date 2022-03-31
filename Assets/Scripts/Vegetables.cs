@@ -12,6 +12,7 @@ public class Vegetables : MonoBehaviour
     private int cabbageCount;
     private int tomatoCount;
     public CameraController cameraControls;
+    public float raycastRange;
 
 
     private void Start()
@@ -23,7 +24,7 @@ public class Vegetables : MonoBehaviour
         
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out hit))
+            if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out hit, raycastRange))
             {
                 {
                 //Only objects tagged "Cabbage"
