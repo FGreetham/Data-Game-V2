@@ -6,38 +6,52 @@ public class CameraController : MonoBehaviour
 {
     public Transform playerBody;
 
+    public float mouseX = 0f;
+    public float mouseY = 0f;
+
     public float sensitivity = 5f;
 
-    public float xRotation = 90f;
-    public float minX = -60f;
-    public float maxX = 60f;
+    public float rotationX = 0f;
+   /* public float minX = -90f;
+    public float maxX = 90f; */
 
     // Start is called before the first frame update
     void Start()
     {
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        
+    }
+
+    void Update()
+    {
+       
+        //The below lines of code make the camera work - the mouseX turns in the right direction at the correct speed. 
+        mouseX = Input.GetAxis("Mouse X") * sensitivity;
+        mouseY -= Input.GetAxis("Mouse Y") * sensitivity;
+
+        rotationX -= mouseY;
+        mouseY = Mathf.Clamp(mouseY, -90f, 90f);
+        transform.localEulerAngles = new Vector3(mouseY, 0, 0);
+
+        playerBody.Rotate(Vector3.up * mouseX);
+
     }
 
     // Update is called once per frame
-    void Update()
+    /*void FixedUpdate()
     {
-        /*The 4 lines of code make the camera work - the mouse turns in the right direction
-         at the correct speed. But it doesn't clamp. 
-        Also Time.deltaTime makes it very slow to move, even when increasing sensitivity 
-        and it's hard to control the mouse. Smoother without it.*/
-        float mouseX = Input.GetAxis("Mouse X") * sensitivity; // * Time.deltaTime;
-        float mouseY = Input.GetAxis("Mouse Y") * sensitivity; // * Time.deltaTime;
+        // For Time.deltaTime - sensitivity setting needs to be way up. 200f was working better.
+         mouseX = Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
+         mouseY -= Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
+        
+        rotationX -= mouseY;
+        mouseY = Mathf.Clamp(mouseY, -90f, 90f);
+        transform.localEulerAngles = new Vector3(mouseY, 0, 0);
 
         playerBody.Rotate(Vector3.up * mouseX);
-        transform.Rotate(Vector3.left * mouseY);
 
-        /*THE CAMERA DOES NOT CLAMP EVEN WHEN I USE THE BELOW CODE. 
-          IT EITHER SHAKES, OR LOOKS AT THE GROUND */
-        /* xRotation -= mouseY;
-          xRotation = Mathf.Clamp(mouseX, minX, maxX); 
-          transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-          transform.Rotate(Vector3.right * mouseY); */
+    } */
 
-    }
+
+
 }

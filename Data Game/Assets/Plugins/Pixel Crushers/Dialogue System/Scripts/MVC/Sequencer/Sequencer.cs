@@ -1223,6 +1223,10 @@ namespace PixelCrushers.DialogueSystem
             {
                 return HandleStopConversationInternally();
             }
+            else if (string.Equals(commandName, "SequencerMessage"))
+            {
+                return HandleSequencerMessageInternally(commandName, args);
+            }
             return false;
         }
 
@@ -2732,6 +2736,17 @@ namespace PixelCrushers.DialogueSystem
         {
             if (DialogueDebug.logInfo) Debug.Log(string.Format("{0}: Sequencer: StopConversation()", new System.Object[] { DialogueDebug.Prefix }));
             DialogueManager.StopConversation();
+            return true;
+        }
+
+        private bool HandleSequencerMessageInternally(string commandName, string[] args)
+        {
+            var message = SequencerTools.GetParameter(args, 0);
+            if (DialogueDebug.logInfo) Debug.Log(string.Format("{0}: Sequencer: SequencerMessage({1})", new System.Object[] { DialogueDebug.Prefix, message }));
+            if (!string.IsNullOrEmpty(message))
+            {
+                Sequencer.Message(message);
+            }
             return true;
         }
 
