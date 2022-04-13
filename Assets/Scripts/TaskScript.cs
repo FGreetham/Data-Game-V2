@@ -5,45 +5,111 @@ using TMPro;
 
 public class TaskScript : MonoBehaviour
 {
-    public Transform target;
+    [SerializeField] private CameraController cameraControls;
+    [SerializeField] private Transform target;
+    [SerializeField] private CatFound cat;
+
+    //All the UI being used
     public TextMeshProUGUI pressT;
+    public GameObject task1;
+    public GameObject task2;
+    public GameObject task1b;
+    //public GameObject task1c;
+
+    //public bool playerInsideTrigger;
+
+    //What is the task status?
+    [HideInInspector] public bool task1Started;
+    public bool task1Complete;
+    public bool task2Complete;
+    public bool catCollected;
     
-    private bool playerInsideTrigger;
+
+    private void Start()
+    {
+        //Tasks set to not "completed" on start.
+        task1Complete = false;
+        task2Complete = false;
+        cameraControls.GetComponent<CameraController>();
+        catCollected = false;
+    }
+
+    private void Update()
+    {
+        //****ATTENTION****
+        //THIS SHOULD PROBABLY BE IN A DATAMANAGER SCRIPT INSTEAD
+        if (cat.catCollected == true)
+        {
+            task1Complete = true;
+            task1Started = false;
+        }
+    }
 
     private void OnTriggerEnter(Collider other)
     {
-        playerInsideTrigger = true;
-
         transform.LookAt(target);
-        pressT.gameObject.SetActive(true);
-        Debug.Log("In trigger zone");
-
-        //I understand the Input.GetKey needs to be in an update as it doesn't work otherwise
-        //but what if I only want it working whilst in Trigger zone,
-        //rather than update method checking if character is in the trigger zone every frame?
-        InvokeRepeating("Task", 0, 0.02f); 
-
     }
 
-    public void Task()
+    //Shows UI for different tasks
+    public void TaskStart()
     {
-        if (playerInsideTrigger == true && Input.GetKeyDown(KeyCode.T))
+      
+        if (task1Complete != true && task1Started != true)
+            {
+                Debug.Log("Task1 Started");
+                task1.gameObject.SetActive(true);
+                cameraControls.enabled = false;
+            }
+
+        /*DRAFTING ANOTHER UI
+         * if (task1Complete != true && task1Started == true)
         {
-            Debug.Log("T pressed");
-            return;
-        }
+            Debug.Log("Task1 Complete");
+            task1c.gameObject.SetActive(true);
+            cameraControls.enabled = false;
+        } */
 
-        //Notes below
+        if (task1Complete == true)
+            {
+                task2.gameObject.SetActive(true);
+                cameraControls.enabled = false;
+            }
+        
     }
 
-    private void OnTriggerExit(Collider other)
+    public void TaskExit()
     {
+        Debug.Log("Task not undertaken");
+        task1.gameObject.SetActive(false);
         pressT.gameObject.SetActive(false);
-        playerInsideTrigger = false;
+        //task2.gameObject.SetActive(false);
+        cameraControls.enabled = true;
     }
+
+ 
+    public void Task1()
+    {
+        task1.gameObject.SetActive(false);
+        Debug.Log("Task 1 Started");
+        task1b.gameObject.SetActive(true);
+        
+    }
+    public void Task1Started()
+    {
+        cat.gameObject.SetActive(true);
+        task1b.gameObject.SetActive(false);
+        pressT.gameObject.SetActive(false);
+        cameraControls.enabled = true;
+        task1Started = true;
+
+    }
+
+    public void Task2()
+    {
+        task2.gameObject.SetActive(false);
+        Debug.Log("Task 2 Started");
+        cameraControls.enabled = true;
+    }
+
 }
 
-//NOTES
-//WaitForSeconds... once the player has click the button, they are still in triggerzone
-//Need to implement coroutine to give the player time before UI displays again.. or 
-//Make it so they need to exit trigger before entering again?

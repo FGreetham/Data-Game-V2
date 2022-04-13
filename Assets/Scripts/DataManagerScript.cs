@@ -4,9 +4,12 @@ using UnityEngine;
 
 public class DataManagerScript : MonoBehaviour
 {
-    public static DataManagerScript instance; 
+    public static DataManagerScript instance;
     /* should this be the script or the gameObject it's attached to? 
     Might need to update and specify game object */
+
+    [SerializeField] private CatFound catScript;
+    public bool task1Complete;
 
     private void Awake()
     {
@@ -28,6 +31,6 @@ public class DataManagerScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        task1Complete = catScript.catCollected;
     }
 }

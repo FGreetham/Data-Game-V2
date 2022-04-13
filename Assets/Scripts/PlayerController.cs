@@ -1,26 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
+    //Character movement variables
     public CharacterController controller;
-
     public float speed = 2.0f;
     public float jumpHeight = 3.0f;
     public float gravity = -9.8f;
     Vector3 velocity;
-
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
     bool isGrounded;
 
-    public Transform pushPoint;
 
-    // Update is called once per frame
+    //NPC Task related variables
+    public bool playerInsideTrigger;
+    public GameObject tempNpc;
+    public TextMeshProUGUI pressT;
+    [SerializeField] private TaskScript npc1Script;
+
+
+
     void Update()
     {
+        //Movement 
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         if (isGrounded && velocity.y < 0)
         {
@@ -37,14 +44,41 @@ public class PlayerController : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
-        Invoke("WheelbarrowPush", 0);
-        /* if (Input.GetKeyDown(KeyCode.J))
-          {
-              velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
-              // isGrounded check to make only jump once stops it from jumping at all.
-          } */
+        //Tasks
+        if (playerInsideTrigger == true && Input.GetKeyDown(KeyCode.T))
+        {
+            if (tempNpc.tag == "NPC1")
+            {
+                Debug.Log("NPC1 Task started");
+                npc1Script.TaskStart();
+            }
+        }
     }
 
+
+    public void OnTriggerEnter(Collider other)
+    {
+
+        print(other.gameObject.tag);
+        if (other.gameObject.tag == "NPC1")
+        {
+            tempNpc = other.gameObject;
+            playerInsideTrigger = true;
+            pressT.gameObject.SetActive(true);
+        }
+
+    }
+
+    //When character leaves the collider, TaskScript can't be triggered.
+    public void OnTriggerExit(Collider other)
+    {
+        pressT.gameObject.SetActive(false);
+        playerInsideTrigger = false;
+        tempNpc = null;
+    }
+
+
+    //SPARE CODE I WAS USING TO TRY AND PUSH AN OBJECT - WILL DELETE EVENTUALLY
     /*private void OnControllerColliderHit(ControllerColliderHit hit)
     {
         //Vector3 offset = new Vector3(0, 0f, 0);
@@ -57,37 +91,4 @@ public class PlayerController : MonoBehaviour
             hit.collider.attachedRigidbody.velocity = pushDir * (speed/2);
         }
     } */
-
-    void WheelbarrowPush()
-    {
-        float pickUpRange = 10f;
-        GameObject pushedObject;
-
-        //WHY DOES IT NOT ALLOW ME TO CHECK IF SOMETHING IS THERE?
-
-        /* if (pushedObject != null && Input.GetKeyDown(KeyCode.D)) 
-        {
-            pushedObject.transform.parent = null;
-            speed = speed * 2;
-            return;
-        } */
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out RaycastHit hit, pickUpRange))
-        {
-            if (hit.collider.gameObject.tag == "Movable")
-            {
-                pushedObject = hit.collider.gameObject;
-                pushedObject.transform.position = pushPoint.position;
-                pushedObject.transform.parent = pushPoint.transform;
-                pushedObject.transform.rotation = pushPoint.rotation * Quaternion.Euler(10f, 0, 0);
-
-                speed = speed / 2;
-                //Maybe add on screen text to say you have to hold the click
-
-            }
-
-        }
-
-    }
 }
