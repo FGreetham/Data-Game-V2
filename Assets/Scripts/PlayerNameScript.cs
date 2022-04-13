@@ -37,9 +37,10 @@ public class PlayerNameScript : MonoBehaviour
         string inputText = inputField.GetComponent<TMP_InputField>().text;
         Debug.Log(inputText);
 
-        //Have put this here as the SetString method below doesn't seem to work
-        //Only works if I make a seperate PlayerName variable above. 
         PlayerPrefs.SetString(PlayerName, inputText);
+        //Have put this here as the SetString method below doesn't seem to work
+        //Only works if I make a seperate PlayerName variable like above. 
+
 
         // SceneManager.LoadScene("Garden Scene");
     }
@@ -49,13 +50,13 @@ public class PlayerNameScript : MonoBehaviour
         PlayerPrefs.SetString(PlayerName, inputText);
         //ATTENTION
         //Something here isn't working.. it doesn't pull to a GetString method (returns 'void')
-        //and PlayerName not recognised for HasKey either.
+        //and the Key 'PlayerName' is not recognised for HasKey either.
         //Also how do I know if it's connected to my local variable 'inputText' from the SaveName6 method
         //and it hasn't just created a new 'inputText' variable for itself?
     }
 
 
-    //Only shows the button to move on when player begins typing
+    //Only shows the Start button which calls the SaveName method when player begins typing
     public void ButtonShow()
     {
         startButton.SetActive(true);
