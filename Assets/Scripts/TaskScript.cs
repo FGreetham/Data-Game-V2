@@ -5,44 +5,47 @@ using TMPro;
 
 public class TaskScript : MonoBehaviour
 {
+    [SerializeField] private DataManagerScript dataScript;
     [SerializeField] private CameraController cameraControls;
     [SerializeField] private Transform target;
     [SerializeField] private CatFound cat;
+   
+
+    public GameObject[] npc1Tasks;
+
+    //Defining variable for the index of the array
+    public int taskIndex;
+    public GameObject this[int taskIndex] => npc1Tasks[taskIndex];
+    //public int dataScript.taskCollectables[taskIndex];
+
 
     //All the UI being used
     public TextMeshProUGUI pressT;
     public GameObject task1;
-    public GameObject task2;
     public GameObject task1b;
+    //public GameObject task2;
     //public GameObject task1c;
 
-    //public bool playerInsideTrigger;
-
+  
     //What is the task status?
     [HideInInspector] public bool task1Started;
-    public bool task1Complete;
-    public bool task2Complete;
-    public bool catCollected;
-    
+    //private bool task2Complete;
+    //private bool catCollected;
+   // public bool taskRunning;
+    public int clickedNo;
 
     private void Start()
     {
+        cameraControls.GetComponent<CameraController>(); 
+
         //Tasks set to not "completed" on start.
-        task1Complete = false;
-        task2Complete = false;
-        cameraControls.GetComponent<CameraController>();
-        catCollected = false;
+       // task2Complete = false;       
+       // catCollected = false;
     }
 
     private void Update()
     {
-        //****ATTENTION****
-        //THIS SHOULD PROBABLY BE IN A DATAMANAGER SCRIPT INSTEAD
-        if (cat.catCollected == true)
-        {
-            task1Complete = true;
-            task1Started = false;
-        }
+        Debug.Log(npc1Tasks[taskIndex]);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -53,13 +56,29 @@ public class TaskScript : MonoBehaviour
     //Shows UI for different tasks
     public void TaskStart()
     {
+        Debug.Log(npc1Tasks[taskIndex]);
+
+        if (dataScript.taskRunning == true)
+            return;
+        //Put a "Come back when you're done" message...
+        //otherwise nothing will happen when pressing T
+
+        if (dataScript.taskRunning == false)
+        {
+            taskIndex++;
+            cameraControls.enabled = false;
+            npc1Tasks[taskIndex].SetActive(true);
+            Debug.Log("Task Started");
+
+
+        }
       
-        if (task1Complete != true && task1Started != true)
+      /*  if (task1Complete != true && task1Started != true)
             {
                 Debug.Log("Task1 Started");
                 task1.gameObject.SetActive(true);
-                cameraControls.enabled = false;
-            }
+                
+            }*/
 
         /*DRAFTING ANOTHER UI
          * if (task1Complete != true && task1Started == true)
@@ -67,26 +86,38 @@ public class TaskScript : MonoBehaviour
             Debug.Log("Task1 Complete");
             task1c.gameObject.SetActive(true);
             cameraControls.enabled = false;
-        } */
+        } 
 
         if (task1Complete == true)
             {
                 task2.gameObject.SetActive(true);
                 cameraControls.enabled = false;
-            }
-        
+            }*/
     }
 
     public void TaskExit()
     {
-        Debug.Log("Task not undertaken");
-        task1.gameObject.SetActive(false);
+        npc1Tasks[taskIndex].SetActive(false);
+        
         pressT.gameObject.SetActive(false);
-        //task2.gameObject.SetActive(false);
+      
         cameraControls.enabled = true;
+
+        // Debug.Log("Task not undertaken");
+        // task1.gameObject.SetActive(false);  
+        //task2.gameObject.SetActive(false);
+    }
+
+    public void ClickedNo()
+    {
+        //Tracking if the player clicks no on a task
+        clickedNo++;
+        Debug.Log("Rejected tasks " + clickedNo);
+        Invoke("TaskExit", 0);
     }
 
  
+    //Can I delete? Or is this Task 1 method i need to keep?
     public void Task1()
     {
         task1.gameObject.SetActive(false);
@@ -94,22 +125,24 @@ public class TaskScript : MonoBehaviour
         task1b.gameObject.SetActive(true);
         
     }
-    public void Task1Started()
+
+
+    public void Task1Started()  //This will be on the "Ok" button click on Task1b. Rename Task1b 
     {
+        dataScript.taskRunning = true;
         cat.gameObject.SetActive(true);
         task1b.gameObject.SetActive(false);
-        pressT.gameObject.SetActive(false);
-        cameraControls.enabled = true;
-        task1Started = true;
-
+        Invoke("TaskExit", 0);
+       // task1Started = true;
+       
     }
 
-    public void Task2()
+   /* public void Task2()
     {
         task2.gameObject.SetActive(false);
         Debug.Log("Task 2 Started");
         cameraControls.enabled = true;
-    }
+    } */
 
 }
 

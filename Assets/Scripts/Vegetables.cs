@@ -12,7 +12,7 @@ public class Vegetables : MonoBehaviour
     private int cabbageCount;
     private int tomatoCount;
     public CameraController cameraControls;
-    public float raycastRange;
+    public float raycastRange = 7f;
 
 
     private void Start()
@@ -40,7 +40,6 @@ public class Vegetables : MonoBehaviour
 
             }
 
-       // Invoke("PickUpItem", 0);
 
     }
     public void PickUpItem()

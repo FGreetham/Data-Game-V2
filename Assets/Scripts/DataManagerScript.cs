@@ -5,32 +5,48 @@ using UnityEngine;
 public class DataManagerScript : MonoBehaviour
 {
     public static DataManagerScript instance;
-    /* should this be the script or the gameObject it's attached to? 
-    Might need to update and specify game object */
 
     [SerializeField] private CatFound catScript;
     public bool task1Complete;
+    public bool taskRunning;
+
+    private int allCollectables;
+    private int allInteractables;
+    public int[] taskCollectables = { 1 , 2, 3 };
+    public int[] taskInteractables = { 1, 2, 3 };
 
     private void Awake()
     {
         if (instance != null)
         {
-           Destroy(gameObject);
+            Destroy(gameObject);
             return;
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
         Debug.Log("Awake: " + this.gameObject);
     }
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+
 
     // Update is called once per frame
     void Update()
     {
-        task1Complete = catScript.catCollected;
+        //Task 1 - Collect the cat
+        if (catScript.catCollected)
+        {
+            taskRunning = false;
+            task1Complete = true;
+        }
+
+        if (gameObject.tag == "Collectable") //Should this reference if tagged object destroyed,
+                                             //or should this be on a different script and reference the allCollectables from there?
+        {
+            allCollectables++;
+            if(taskRunning == true)
+            {
+
+            }
+        }
+        
     }
 }
