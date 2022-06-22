@@ -5,17 +5,17 @@ using TMPro;
 
 public class TaskScript : MonoBehaviour
 {
+    //References
     [SerializeField] private DataManagerScript dataScript;
     [SerializeField] private CameraController cameraControls;
-    [SerializeField] private Transform target;
     [SerializeField] private CatFound cat;
-   
 
+    //Variables
     public GameObject[] npc1Tasks;
-
-    //Defining variable for the index of the array
     public int taskIndex;
-    public GameObject this[int taskIndex] => npc1Tasks[taskIndex];
+    [SerializeField] private Transform target;
+    
+    //public GameObject this[int taskIndex] => npc1Tasks[taskIndex];
     //public int dataScript.taskCollectables[taskIndex];
 
 
@@ -36,23 +36,29 @@ public class TaskScript : MonoBehaviour
 
     private void Start()
     {
-        cameraControls.GetComponent<CameraController>(); 
-
-        //Tasks set to not "completed" on start.
-       // task2Complete = false;       
-       // catCollected = false;
+        cameraControls.GetComponent<CameraController>();
     }
+
+    private void OnTriggerStay(Collider other)
+    {
+       // transform.LookAt(target);
+        FaceDirecton(target.position);
+      
+    }
+    void FaceDirecton(Vector3 target)
+    {
+        Vector3 direction = (target - transform.position).normalized;
+        Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
+
+        // transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime *2f);
+    }
+
 
     private void Update()
     {
-        Debug.Log(npc1Tasks[taskIndex]);
+      
     }
-
-    private void OnTriggerEnter(Collider other)
-    {
-        transform.LookAt(target);
-    }
-
     //Shows UI for different tasks
     public void TaskStart()
     {

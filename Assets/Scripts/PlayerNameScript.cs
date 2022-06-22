@@ -11,6 +11,7 @@ public class PlayerNameScript : MonoBehaviour
 
     public GameObject inputField;
     public string inputText;
+    public GameObject sceneText;
 
     private void Start()
     {
@@ -26,7 +27,7 @@ public class PlayerNameScript : MonoBehaviour
     }
 
     //Attached to the button script and it can pull the string from the text input field.
-    public void SaveName6()
+    public void SaveName()
     {
         string inputText = inputField.GetComponent<TMP_InputField>().text;
 
@@ -34,12 +35,15 @@ public class PlayerNameScript : MonoBehaviour
         PlayerPrefs.SetString("PlayerName", inputText);
         Debug.Log("GetString is " + PlayerPrefs.GetString("PlayerName"));
 
-        SceneManager.LoadScene("Garden Scene");
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
-
+   
     //Only shows the Start button which calls the SaveName method when player begins typing
     public void ButtonShow()
     {
         startButton.SetActive(true);
     }
+
+
+
 }
