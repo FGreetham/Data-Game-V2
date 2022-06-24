@@ -16,6 +16,9 @@ public class PlayerController : MonoBehaviour
     public LayerMask groundMask;
     bool isGrounded;
 
+    //Raycast variables
+    RaycastHit hit;
+    [SerializeField] private float raycastRange = 7;
 
     //NPC Task related variables
     public bool playerInsideTrigger;
@@ -43,6 +46,9 @@ public class PlayerController : MonoBehaviour
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
+
+        //Raycast - can i use this instead of repeating across other scripts?
+        RaycastCheck();
 
         //Tasks
         if (playerInsideTrigger == true && Input.GetKeyDown(KeyCode.T))
@@ -77,6 +83,13 @@ public class PlayerController : MonoBehaviour
         tempNpc = null;
     }
 
+    //Can I use this across the other scripts rather than repeating code?
+    void RaycastCheck()
+    {
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Physics.Raycast(ray, out hit, raycastRange);
+   
+    }
 
     //SPARE CODE I WAS USING TO TRY AND PUSH AN OBJECT - WILL DELETE EVENTUALLY
     /*private void OnControllerColliderHit(ControllerColliderHit hit)

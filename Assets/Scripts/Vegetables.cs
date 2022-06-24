@@ -9,8 +9,8 @@ public class Vegetables : MonoBehaviour
     public GameObject pickUpMenu;
     RaycastHit hit;
     public GameObject tempCollectable;
-    private int cabbageCount;
-    private int tomatoCount;
+    public int cabbageCount;
+    public int tomatoCount;
     public CameraController cameraControls;
     public float raycastRange = 7f;
 
@@ -75,6 +75,8 @@ public class Vegetables : MonoBehaviour
             Debug.Log("Tomatoes = " + tomatoCount);
         }
     }
+
+
 
     /* DRAFT CODE FOR REF: 
         This code works to delete object when you simply click on the cabbage, no frills like text on the screen...

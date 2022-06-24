@@ -8,6 +8,7 @@ public class TaskScript : MonoBehaviour
     //References
     [SerializeField] private DataManagerScript dataScript;
     [SerializeField] private CameraController cameraControls;
+    [SerializeField] private CharacterController controller;
     [SerializeField] private CatFound cat;
 
     //Variables
@@ -23,7 +24,7 @@ public class TaskScript : MonoBehaviour
     public TextMeshProUGUI pressT;
     public GameObject task1;
     public GameObject task1b;
-    //public GameObject task2;
+    public GameObject task2b;
     //public GameObject task1c;
 
   
@@ -55,10 +56,6 @@ public class TaskScript : MonoBehaviour
     }
 
 
-    private void Update()
-    {
-      
-    }
     //Shows UI for different tasks
     public void TaskStart()
     {
@@ -73,6 +70,7 @@ public class TaskScript : MonoBehaviour
         {
             taskIndex++;
             cameraControls.enabled = false;
+            controller.enabled = false;
             npc1Tasks[taskIndex].SetActive(true);
             Debug.Log("Task Started");
 
@@ -108,6 +106,7 @@ public class TaskScript : MonoBehaviour
         pressT.gameObject.SetActive(false);
       
         cameraControls.enabled = true;
+        controller.enabled = true;
 
         // Debug.Log("Task not undertaken");
         // task1.gameObject.SetActive(false);  
@@ -123,17 +122,18 @@ public class TaskScript : MonoBehaviour
     }
 
  
-    //Can I delete? Or is this Task 1 method i need to keep?
+   //Button to start Task1
     public void Task1()
     {
-        task1.gameObject.SetActive(false);
+        npc1Tasks[taskIndex].SetActive(false);
+        //task1.gameObject.SetActive(false);
         Debug.Log("Task 1 Started");
         task1b.gameObject.SetActive(true);
         
     }
 
-
-    public void Task1Started()  //This will be on the "Ok" button click on Task1b. Rename Task1b 
+    //This is the "Ok" button click on Task1b. 
+    public void Task1Started()  
     {
         dataScript.taskRunning = true;
         cat.gameObject.SetActive(true);
@@ -143,12 +143,20 @@ public class TaskScript : MonoBehaviour
        
     }
 
-   /* public void Task2()
+    public void Task2()
     {
-        task2.gameObject.SetActive(false);
+        npc1Tasks[taskIndex].SetActive(false);
+        Debug.Log("Task 1 Started");
+        task2b.gameObject.SetActive(true);
+
+    }
+    public void Task2Started()
+    {
+        dataScript.taskRunning = true;
+        task2b.gameObject.SetActive(false);
         Debug.Log("Task 2 Started");
-        cameraControls.enabled = true;
-    } */
+        Invoke("TaskExit", 0);
+    } 
 
 }
 

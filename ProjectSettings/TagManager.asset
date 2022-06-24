@@ -8,6 +8,11 @@ TagManager:
   - Tomato
   - Movable
   - Pick Up
+  - NPC1
+  - Collectable
+  - Cat
+  - Door
+  - Trigger
   layers:
   - Default
   - TransparentFX
@@ -17,7 +22,7 @@ TagManager:
   - UI
   - Ground
   - Pickup
-  - 
+  - Collectables
   - 
   - 
   - 
