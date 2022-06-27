@@ -10,6 +10,7 @@ public class DataManagerScript : MonoBehaviour
     [SerializeField] private CatFound catScript;
     [SerializeField] private TaskScript tasks;
     [SerializeField] private Vegetables vegScript;
+    [SerializeField] private DoorLock doorScript;
 
 
     [Header("Task Status")]
@@ -19,13 +20,12 @@ public class DataManagerScript : MonoBehaviour
 
     //Variable Set Up
     [SerializeField] private int allCollectables;
-    private int allInteractables;
+    public List<string> interactables; 
+
     [SerializeField] private int explorePoint;
     [SerializeField] private int completionPoint;
     public int[] taskCollectables;
     public int[] taskInteractables;
-
-    //LayerMask collectables = LayerMask.GetMask("Collectables");
 
     private void Awake()
     {
@@ -40,9 +40,11 @@ public class DataManagerScript : MonoBehaviour
     }
 
 
-    //I DON'T THINK THE BELOW SHOULD BE IN UPDATE... WOULD A NORMAL METHOD DO?
+ 
     void Update() 
     {
+        allCollectables = vegScript.cabbageCount + vegScript.tomatoCount;
+
         //Task 1 - Collect the cat
         if (catScript.catCollected)
         {
@@ -51,6 +53,7 @@ public class DataManagerScript : MonoBehaviour
             task1Complete = true;
             completionPoint++;
         }
+        //Task 2
         if (vegScript.tomatoCount >= 5)
         {
             task2Complete = true;
@@ -58,27 +61,22 @@ public class DataManagerScript : MonoBehaviour
             completionPoint++;
         }
 
-
-        //WHOLE AREA BELOW NEEDS WORK - REGISTERING WHEN A COLLECTABLE OBJECT IS PICKED UP UNDER WHICH ACTIVE TASK
-        //   if (gameObject.tag == "Collectable") //Should this reference if tagged object destroyed,
-        //or should this be on a different script and reference the allCollectables from there?
+        /*
         if (vegScript.tempCollectable != null)
         {
-            allCollectables += 1; // Need to make this so only adds one when tempCollectable first becomes null... 
-            //Or only when PickUpItem invoked..
+            
+
+ 
             if (taskRunning == true)
             {
-                // tasks.taskIndex = taskCollectables[tasks.taskIndex];
-                //SHOULD THIS BE A DICTIONARY... SO WHEN TASK 2 = ACTIVE, AND COLLECTIBLES +1, IT ADDS A VALUE TO THE KEY TASK 2?
-
-                //***Does it need to be added to that particular task? Or just the taskCollectabled in general? JUST IN GENERAL
-
+                taskCollectables[tasks.taskIndex]++;
+              
             }
             else
             {
                 explorePoint++;
             }
-        }
+        }*/
 
     }
 
@@ -108,6 +106,14 @@ public class DataManagerScript : MonoBehaviour
             Debug.Log("Task left uncomplete");
         }
 
-        
+        if(doorScript.doorLocked == true)
+        {
+            Debug.Log("Locked the door");
+        }
+        if(doorScript.doorLocked == false && doorScript.doorClosed)
+        {
+            Debug.Log(PlayerPrefs.GetString("PlayerName") + " closed but didn't lock the door.");
+        }
+
     }
 }

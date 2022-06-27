@@ -4,68 +4,39 @@ using UnityEngine;
 
 public class PickUp : MonoBehaviour
 {
-    [SerializeField] private LayerMask pickUpMask;
-    [SerializeField] private float pickUpRange; 
-    [SerializeField] private Transform pickUpTarget;
+    [SerializeField] private float pickUpRange;
+    [SerializeField] private Transform pickUpPoint;
+    [SerializeField] private GameObject pickedUpObject;
+    [SerializeField] private DataManagerScript data;
 
-    
-    public Rigidbody currentObject;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    /*  void Update()
-      {
-
-          if (currentObject)
-          {
-              currentObject.useGravity = true;
-              currentObject = null;
-              return;
-          } 
-
-            if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit HitInfo, pickUpRange, pickUpMask))
-            {
-                currentObject = HitInfo.rigidbody;
-                currentObject.useGravity = false;
-            }
-        }
-}*/
+    /*Semi-works. Has to be attached to the gameobject to pick up. 
+     * Still floats - can't get physics to turn off
+     * When it lands - it falls through the ground sometimes. Is this a problem with the terrian physics? */
 
     void OnMouseDown()
     {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, pickUpRange, pickUpMask))
-            {
-                currentObject = hit.rigidbody;
-                currentObject.useGravity = false;
-            }
-        
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out RaycastHit hit, pickUpRange))
+        {
+            pickedUpObject = hit.collider.gameObject;
+            pickedUpObject.GetComponent<MeshCollider>().enabled = false;
+            pickedUpObject.GetComponent<Rigidbody>().useGravity = false;
+            pickedUpObject.transform.position = pickUpPoint.position;
+            pickedUpObject.transform.parent = GameObject.FindGameObjectWithTag("Pick Up").transform;
+        }
+
     }
 
     private void OnMouseUp()
     {
-        currentObject.useGravity = true;
-        currentObject = null;
-        return;
-    }
-
-    void FixedUpdate()
-    {
-        if (currentObject)
+        if (pickedUpObject)
         {
-            Vector3 directionToPoint = pickUpTarget.position - currentObject.position;
-            float distanceToPoint = directionToPoint.magnitude;
-            float speed = 12f;
-
-            currentObject.velocity = directionToPoint * speed * distanceToPoint;
+            pickedUpObject.transform.parent = null;
+            pickedUpObject.GetComponent<MeshCollider>().enabled = true;
+            pickedUpObject.GetComponent<Rigidbody>().useGravity = true;
+            data.interactables.Add(pickedUpObject.name);
+            Debug.Log(data.interactables.Count);
+            return;
         }
 
     }

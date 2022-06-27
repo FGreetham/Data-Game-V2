@@ -16,6 +16,7 @@ public class DoorLock : MonoBehaviour
     [SerializeField] private float rotation;
     [SerializeField] private float targetRotation;
     public bool doorClosed;
+    public bool doorLocked;
 
     //GUI variables
     public GameObject onScreen;
@@ -77,6 +78,7 @@ public class DoorLock : MonoBehaviour
     {
         if (inputField.GetComponent<TMP_InputField>().text == "1111")
         {
+            doorLocked = true;
             cameraControls.enabled = true;
             lockDoor.SetActive(false);
             StartCoroutine("SuccessMsg");
@@ -124,6 +126,7 @@ public class DoorLock : MonoBehaviour
     //Start the variables so the door will close on first click.
     void Start()
     {
+        doorLocked = false;
         doorClosed = false;
         targetRotation = 190f;
         rotation = 40f;
