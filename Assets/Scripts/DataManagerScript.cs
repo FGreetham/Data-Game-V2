@@ -130,6 +130,7 @@ public class DataManagerScript : MonoBehaviour
         
     }
 
+//Below will be deleted. Just for reference.
     public void DataToRemember()
     {
         //How many times player clicked no on a task?
