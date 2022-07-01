@@ -11,23 +11,31 @@ public class DataManagerScript : MonoBehaviour
     [SerializeField] private TaskScript tasks;
     [SerializeField] private Vegetables vegScript;
     [SerializeField] private DoorLock doorScript;
-
+    [SerializeField] private PickUp pickUp;
 
     [Header("Task Status")]
     public bool task1Complete;
     public bool task2Complete;
     public bool taskRunning;
+ 
 
     //Variable Set Up
     [SerializeField] private int allCollectables;
-    public List<string> interactables; 
+    public List<string> interactables;
+    public List<int> indexOfCompleteTasks;
+       
 
     [SerializeField] private int explorePoint;
     [SerializeField] private int completionPoint;
     public int[] taskCollectables;
     public int[] taskInteractables;
 
-    private void Awake()
+    [Header("JSON Data")]
+    string filename = "data.json";
+    string path;
+    GameData gameData = new GameData();
+
+     void Awake()
     {
         if (instance != null)
         {
@@ -36,48 +44,90 @@ public class DataManagerScript : MonoBehaviour
         }
         instance = this;
         DontDestroyOnLoad(gameObject);
-        Debug.Log("Awake: " + this.gameObject);
+
+
+        //Trying to get time when player starts game.
+        var timeOnAwake = System.DateTime.Now;
+    }
+
+    void Start()
+    {
+        path = Application.persistentDataPath + "/" + filename;
+        print(path);
     }
 
 
  
     void Update() 
     {
-        allCollectables = vegScript.cabbageCount + vegScript.tomatoCount;
-
-        //Task 1 - Collect the cat
-        if (catScript.catCollected)
+        //allCollectables = vegScript.cabbageCount + vegScript.tomatoCount;
+    
+        if(Input.GetKeyDown(KeyCode.N))
         {
-            taskRunning = false; 
-            //THIS IS IN UPDATE SO IF YOU COMPLETE TASK 1, DOESN'T SAY TASK RUNNING TRUE FOR SUBSEQUENT TASKS
-            task1Complete = true;
-            completionPoint++;
+           SetData();
         }
-        //Task 2
-        if (vegScript.tomatoCount >= 5)
+        if (Input.GetKeyDown(KeyCode.R))
         {
-            task2Complete = true;
-            taskRunning = false;
-            completionPoint++;
+            ReadData();
         }
+    }
 
-        /*
-        if (vegScript.tempCollectable != null)
-        {
-            
+    public void SetData()
+    {
+        //Player Identifiers
+        gameData.date = System.DateTime.Now.ToShortDateString();
+        gameData.time = System.DateTime.Now.ToShortTimeString();
+        gameData.playerName = PlayerPrefs.GetString("PlayerName");
+        //Trying to work out time player spent on game.
+        //gameData.timePlayed = System.DateTime.Now - timeOnAwake;
 
- 
-            if (taskRunning == true)
+
+        //Player Data
+        gameData.didPlayerCloseDoor = doorScript.doorClosed;
+        gameData.didPlayerLockDoor = doorScript.doorLocked;
+        gameData.numberOfTasksPlayerRejected = tasks.clickedNo;
+        gameData.moreThanOneAttemptToLock = doorScript.attempts;
+
+        //Having issues with converting bool to int for whether the tasks are active or complete.
+        //gameData.numberOfTasksStillRunning = tasks.taskActive[tasks.taskIndex].;
+       // gameData.numnerOfTasksCompleted = tasks.taskComplete[tasks.taskIndex];
+        gameData.indexOfTasksCompleted = indexOfCompleteTasks;
+
+        gameData.itemsInteractedWith = interactables;
+
+        gameData.totalItemsPickedUp = vegScript.cabbageCount + vegScript.tomatoCount;
+        gameData.cabbagesCollected = vegScript.cabbageCount;
+        gameData.tomatosCollected = vegScript.tomatoCount;
+        SaveData();
+    }
+    void SaveData()
+    { 
+        string savedContents = JsonUtility.ToJson(gameData, true);
+        System.IO.File.WriteAllText(path, savedContents);
+    }
+
+    //Loading the data back in
+    void ReadData()
+    {
+        try
+        {//Check if files exists
+            if (System.IO.File.Exists(path))
             {
-                taskCollectables[tasks.taskIndex]++;
-              
+                string savedContents = System.IO.File.ReadAllText(path);
+                gameData = JsonUtility.FromJson<GameData>(savedContents);
             }
             else
             {
-                explorePoint++;
+                print("Unable to read the data, file does not exist");
+                gameData = new GameData();
             }
-        }*/
-
+        }
+        //If file gets corrupted
+        catch (System.Exception ex)
+        {
+            Debug.Log(ex.Message);
+        }
+        
     }
 
     public void DataToRemember()
@@ -105,6 +155,7 @@ public class DataManagerScript : MonoBehaviour
         {
             Debug.Log("Task left uncomplete");
         }
+
 
         if(doorScript.doorLocked == true)
         {

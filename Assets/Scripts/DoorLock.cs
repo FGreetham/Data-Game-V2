@@ -9,7 +9,7 @@ public class DoorLock : MonoBehaviour
     //Variables to Close the Door
     RaycastHit hit;
     [SerializeField] private float raycastRange = 7;
-    //[SerializeField] private PlayerController playerScript; > If Raycast could be a centralised script
+    //[SerializeField] private PlayerController playerScript; > If Raycast could be in one centralised script
 
     //References and Variables
     [SerializeField] private CameraController cameraControls;
@@ -17,6 +17,7 @@ public class DoorLock : MonoBehaviour
     [SerializeField] private float targetRotation;
     public bool doorClosed;
     public bool doorLocked;
+    public int attempts;
 
     //GUI variables
     public GameObject onScreen;
@@ -89,6 +90,7 @@ public class DoorLock : MonoBehaviour
             lockDoor.SetActive(true);
             tryAgain.GetComponent<TMP_Text>().text = "Try again";
             giveUp.SetActive(true);
+            attempts++;
         }
     }
 

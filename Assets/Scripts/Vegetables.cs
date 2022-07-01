@@ -66,7 +66,6 @@ public class Vegetables : MonoBehaviour
             
         {
             cabbageCount += countToAdd;
-            Debug.Log("Cabbages = " + cabbageCount);
         }
 
         if (tempCollectable.gameObject.tag == "Tomato")

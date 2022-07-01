@@ -5,35 +5,30 @@ using TMPro;
 
 public class TaskScript : MonoBehaviour
 {
-    //References
+    [Header("Script References")]
     [SerializeField] private DataManagerScript dataScript;
     [SerializeField] private CameraController cameraControls;
     [SerializeField] private CharacterController controller;
     [SerializeField] private CatFound cat;
+    [SerializeField] private Vegetables vegScript;
+    [SerializeField] private DoorLock doorScript;
+    [SerializeField] private Transform target;
 
-    //Variables
+    [Header("Task Index")]
     public GameObject[] npc1Tasks;
     public int taskIndex;
-    [SerializeField] private Transform target;
-    
-    //public GameObject this[int taskIndex] => npc1Tasks[taskIndex];
-    //public int dataScript.taskCollectables[taskIndex];
+    public int clickedNo;
+    public bool[] taskActive = new bool[3];
+    public bool[] taskComplete = new bool[3];
 
-
-    //All the UI being used
+    [Header("GUI Elements")]
     public TextMeshProUGUI pressT;
     public GameObject task1;
     public GameObject task1b;
     public GameObject task2b;
-    //public GameObject task1c;
-
-  
-    //What is the task status?
-    [HideInInspector] public bool task1Started;
-    //private bool task2Complete;
-    //private bool catCollected;
-   // public bool taskRunning;
-    public int clickedNo;
+    public GameObject comeBack;
+    public GameObject successMsg;
+    public GameObject allTasksMsg;
 
     private void Start()
     {
@@ -42,92 +37,130 @@ public class TaskScript : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-       // transform.LookAt(target);
         FaceDirecton(target.position);
-      
     }
     void FaceDirecton(Vector3 target)
     {
         Vector3 direction = (target - transform.position).normalized;
         Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 5f);
-
-        // transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime *2f);
+        transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 4f);
     }
 
 
     //Shows UI for different tasks
     public void TaskStart()
     {
-        Debug.Log(npc1Tasks[taskIndex]);
-
-        if (dataScript.taskRunning == true)
-            return;
-        //Put a "Come back when you're done" message...
-        //otherwise nothing will happen when pressing T
-
-        if (dataScript.taskRunning == false)
+        pressT.gameObject.SetActive(false);
+      
+        /*If task is active, "Come back when you're done" message appears.
+         * If task completed, success message appears */
+        if (taskActive[taskIndex] == true)
         {
-            taskIndex++;
-            cameraControls.enabled = false;
-            controller.enabled = false;
-            npc1Tasks[taskIndex].SetActive(true);
-            Debug.Log("Task Started");
-
+            if (taskIndex == 1)
+            {
+                if (cat.catCollected == true)
+                {
+                    StartCoroutine("SuccessMessage");
+                    AddData();
+                }
+                else
+                    StartCoroutine("ComeBack");
+            }
+            if (taskIndex == 2)
+            {
+                if (vegScript.tomatoCount >= 5)
+                {
+                    StartCoroutine("SuccessMessage");
+                    AddData();
+                }
+                else
+                    StartCoroutine("ComeBack");
+            }
 
         }
-      
-      /*  if (task1Complete != true && task1Started != true)
-            {
-                Debug.Log("Task1 Started");
-                task1.gameObject.SetActive(true);
-                
-            }*/
-
-        /*DRAFTING ANOTHER UI
-         * if (task1Complete != true && task1Started == true)
+     
+        //If no task actively running, moves through array to next task.
+      if (taskActive[taskIndex] == false)
         {
-            Debug.Log("Task1 Complete");
-            task1c.gameObject.SetActive(true);
-            cameraControls.enabled = false;
-        } 
-
-        if (task1Complete == true)
+            //How do I check 'if ALL indexed tasks are completed?'
+            if (taskComplete[1] == true && taskComplete[2] == true)     
+           {
+                StartCoroutine("CompletedAll");   
+            }
+            //How do I check which taskIndex is complete... if so, need to skip it.
+            else
             {
-                task2.gameObject.SetActive(true);
                 cameraControls.enabled = false;
-            }*/
+                controller.enabled = false;
+
+                Invoke("MoveThroughTasks", 0);
+            }
+
+        }   
+    }
+
+    public void MoveThroughTasks()
+    {
+        //How do I check which taskIndex is complete... if so, need to skip it.
+        taskIndex = (taskIndex++) % npc1Tasks.Length;
+
+        if (npc1Tasks.Length-1 == taskIndex)
+        {
+            taskIndex = 0;
+        }
+        else
+            taskIndex++;  //Task 1 is at index 1. Index 0 is skipped.
+
+        npc1Tasks[taskIndex].SetActive(true);
     }
 
     public void TaskExit()
     {
         npc1Tasks[taskIndex].SetActive(false);
-        
-        pressT.gameObject.SetActive(false);
-      
         cameraControls.enabled = true;
         controller.enabled = true;
-
-        // Debug.Log("Task not undertaken");
-        // task1.gameObject.SetActive(false);  
-        //task2.gameObject.SetActive(false);
     }
 
+    //Tracking if the player clicks no on a task
     public void ClickedNo()
     {
-        //Tracking if the player clicks no on a task
         clickedNo++;
-        Debug.Log("Rejected tasks " + clickedNo);
         Invoke("TaskExit", 0);
     }
 
- 
-   //Button to start Task1
+
+//Below are the GUI for messages when returning to the NPC
+    //If task complete then Success message appears
+    IEnumerator SuccessMessage()
+    {
+        successMsg.SetActive(true);
+        yield return new WaitForSeconds(2f);
+        successMsg.SetActive(false);
+        yield return new WaitForSeconds(0.5f);
+        taskComplete[taskIndex] = true;
+        taskActive[taskIndex] = false;
+      
+    }
+    IEnumerator CompletedAll()
+    {
+        allTasksMsg.SetActive(true);
+        yield return new WaitForSeconds(2.5f);
+        allTasksMsg.SetActive(false);
+        this.enabled = false;
+    }
+    IEnumerator ComeBack()
+    {
+        comeBack.SetActive(true);
+        yield return new WaitForSeconds(2.5f);
+        comeBack.SetActive(false);
+    }
+
+//Below is all UI for Tasks 1-3
+
+    //Button to start Task1
     public void Task1()
     {
         npc1Tasks[taskIndex].SetActive(false);
-        //task1.gameObject.SetActive(false);
-        Debug.Log("Task 1 Started");
         task1b.gameObject.SetActive(true);
         
     }
@@ -136,27 +169,35 @@ public class TaskScript : MonoBehaviour
     public void Task1Started()  
     {
         dataScript.taskRunning = true;
+        taskActive[taskIndex] = true;
         cat.gameObject.SetActive(true);
         task1b.gameObject.SetActive(false);
         Invoke("TaskExit", 0);
-       // task1Started = true;
-       
     }
 
+    //Buttons to start task 2
     public void Task2()
     {
         npc1Tasks[taskIndex].SetActive(false);
-        Debug.Log("Task 1 Started");
         task2b.gameObject.SetActive(true);
-
     }
+
+    //This is the "Ok" button click on Task2b.
     public void Task2Started()
     {
         dataScript.taskRunning = true;
+        taskActive[taskIndex] = true;
         task2b.gameObject.SetActive(false);
-        Debug.Log("Task 2 Started");
         Invoke("TaskExit", 0);
     } 
 
+    void AddData()
+    {
+        //Doesn't work just yet 
+        if(taskComplete[taskIndex] == true)
+        {
+            dataScript.indexOfCompleteTasks.Add(taskIndex);
+        }
+    }
 }
 

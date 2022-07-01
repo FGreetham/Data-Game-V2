@@ -17,7 +17,6 @@ public class CatFound : MonoBehaviour
             if (hit.collider.gameObject.CompareTag("Cat")) 
             {
                 catCollected = true;
-                Debug.Log("Cat Found and Task 1 Complete");
                 gameObject.SetActive(false);
             }
 

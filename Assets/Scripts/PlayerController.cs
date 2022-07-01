@@ -55,7 +55,6 @@ public class PlayerController : MonoBehaviour
         {
             if (tempNpc.tag == "NPC1")
             {
-                Debug.Log("NPC1 Task started");
                 npc1Script.TaskStart();
             }
         }
@@ -91,17 +90,4 @@ public class PlayerController : MonoBehaviour
    
     }
 
-    //SPARE CODE I WAS USING TO TRY AND PUSH AN OBJECT - WILL DELETE EVENTUALLY
-    /*private void OnControllerColliderHit(ControllerColliderHit hit)
-    {
-        //Vector3 offset = new Vector3(0, 0f, 0);
-        Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-
-        if (hit.collider.CompareTag("Movable"))
-        {
-            Debug.Log("Movable wheelbarrow");
-            //this.transform.position = hit.collider.transform.position + offset;
-            hit.collider.attachedRigidbody.velocity = pushDir * (speed/2);
-        }
-    } */
 }

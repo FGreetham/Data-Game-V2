@@ -5,12 +5,14 @@ using UnityEngine.SceneManagement;
 
 public class Exit : MonoBehaviour
 {
-    public GameObject exitMenu;
+    [SerializeField] private DataManagerScript dataScript;
     [SerializeField] private CameraController cameraControls;
+    public GameObject exitMenu;
     public CharacterController controller;
 
     public void OnTriggerEnter()
     {
+        dataScript.SetData();
         exitMenu.SetActive(true);
         cameraControls.enabled = false;
 

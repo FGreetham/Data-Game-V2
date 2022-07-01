@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class PickUp : MonoBehaviour
 {
+    public GameObject pickedUpObject;
     [SerializeField] private float pickUpRange;
     [SerializeField] private Transform pickUpPoint;
-    [SerializeField] private GameObject pickedUpObject;
     [SerializeField] private DataManagerScript data;
+    [SerializeField] private GameData gameData;
 
     /*Semi-works. Has to be attached to the gameobject to pick up. 
      * Still floats - can't get physics to turn off
@@ -35,7 +36,7 @@ public class PickUp : MonoBehaviour
             pickedUpObject.GetComponent<MeshCollider>().enabled = true;
             pickedUpObject.GetComponent<Rigidbody>().useGravity = true;
             data.interactables.Add(pickedUpObject.name);
-            Debug.Log(data.interactables.Count);
+           // gameData.itemsInteractedWith.Add(pickedUpObject.name);
             return;
         }
 
