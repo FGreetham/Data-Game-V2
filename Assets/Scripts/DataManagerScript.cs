@@ -9,7 +9,6 @@ public class DataManagerScript : MonoBehaviour
     public static DataManagerScript instance;
     [SerializeField] private CatFound catScript;
     [SerializeField] private TaskScript tasks;
-    [SerializeField] private Vegetables vegScript;
     [SerializeField] private DoorLock doorScript;
     [SerializeField] private PickUp pickUp;
 
@@ -29,6 +28,10 @@ public class DataManagerScript : MonoBehaviour
     [SerializeField] private int completionPoint;
     public int[] taskCollectables;
     public int[] taskInteractables;
+
+    public int catsFound = 0;
+    public int cabbagesCollected = 0;
+    public int tomatoesCollected = 0;
 
     [Header("JSON Data")]
     string filename = "data.json";
@@ -95,9 +98,10 @@ public class DataManagerScript : MonoBehaviour
 
         gameData.itemsInteractedWith = interactables;
 
-        gameData.totalItemsPickedUp = vegScript.cabbageCount + vegScript.tomatoCount;
-        gameData.cabbagesCollected = vegScript.cabbageCount;
-        gameData.tomatosCollected = vegScript.tomatoCount;
+        gameData.totalItemsPickedUp = cabbagesCollected + tomatoesCollected;
+        gameData.cabbagesCollected = cabbagesCollected;
+        gameData.tomatosCollected = tomatoesCollected;
+
         SaveData();
     }
     void SaveData()
