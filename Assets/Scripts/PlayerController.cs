@@ -47,8 +47,10 @@ public class PlayerController : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
-        //Raycast - can i use this instead of repeating across other scripts?
-        RaycastCheck();
+        if (Input.GetMouseButtonDown(0))
+        {
+            DoInteractionCheck();
+        }
 
         //Tasks
         if (playerInsideTrigger == true && Input.GetKeyDown(KeyCode.T))
@@ -82,12 +84,21 @@ public class PlayerController : MonoBehaviour
         tempNpc = null;
     }
 
-    //Can I use this across the other scripts rather than repeating code?
-    void RaycastCheck()
+    void DoInteractionCheck()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        Physics.Raycast(ray, out hit, raycastRange);
-   
+
+        if (Physics.Raycast(ray, out RaycastHit hit, raycastRange))
+        {
+            // Check if the GameObject we hit has a component that inherits from Collectable
+            var collectableComponent = hit.transform.GetComponent<Collectable>();
+            if (collectableComponent != null)
+            {
+                // If it does, call that component's OnPlayerCollect method
+                // Note that we don't need to know what kind of Collectable it is - this is polymorphism!
+                collectableComponent.OnPlayerCollect();
+            }
+        }
     }
 
 }
