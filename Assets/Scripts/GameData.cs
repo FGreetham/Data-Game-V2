@@ -16,7 +16,7 @@ public class GameData
     public int moreThanOneAttemptToLock;
     public int numberOfTasksPlayerRejected;
     public int numberOfTasksStillRunning;
-    public int numnerOfTasksCompleted;
+   // public int numberOfTasksCompleted;
     public List<int> indexOfTasksCompleted;
     public int totalItemsPickedUp;
     public int tomatosCollected;

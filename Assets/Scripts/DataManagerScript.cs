@@ -13,6 +13,7 @@ public class DataManagerScript : MonoBehaviour
     [SerializeField] private DoorLock doorScript;
     [SerializeField] private PickUp pickUp;
 
+
     [Header("Task Status")]
     public bool task1Complete;
     public bool task2Complete;
@@ -60,7 +61,7 @@ public class DataManagerScript : MonoBehaviour
  
     void Update() 
     {
-        //allCollectables = vegScript.cabbageCount + vegScript.tomatoCount;
+        
     
         if(Input.GetKeyDown(KeyCode.N))
         {
@@ -90,7 +91,7 @@ public class DataManagerScript : MonoBehaviour
 
         //Having issues with converting bool to int for whether the tasks are active or complete.
         //gameData.numberOfTasksStillRunning = tasks.taskActive[tasks.taskIndex].;
-       // gameData.numnerOfTasksCompleted = tasks.taskComplete[tasks.taskIndex];
+       // gameData.numberOfTasksCompleted = tasks.taskComplete[tasks.taskIndex];
         gameData.indexOfTasksCompleted = indexOfCompleteTasks;
 
         gameData.itemsInteractedWith = interactables;
@@ -100,14 +101,14 @@ public class DataManagerScript : MonoBehaviour
         gameData.tomatosCollected = vegScript.tomatoCount;
         SaveData();
     }
-    void SaveData()
+    public void SaveData()
     { 
         string savedContents = JsonUtility.ToJson(gameData, true);
         System.IO.File.WriteAllText(path, savedContents);
     }
 
     //Loading the data back in
-    void ReadData()
+   public void ReadData()
     {
         try
         {//Check if files exists
@@ -130,7 +131,6 @@ public class DataManagerScript : MonoBehaviour
         
     }
 
-//Below will be deleted. Just for reference.
     public void DataToRemember()
     {
         //How many times player clicked no on a task?

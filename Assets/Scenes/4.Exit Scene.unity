@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.18154764, g: 0.22719026, b: 0.30740678, a: 1}
+  m_IndirectSpecularColor: {r: 0.18028334, g: 0.22571328, b: 0.3069217, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -482,7 +482,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Happy to help
+  m_text: Results
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: ba22e4812cebdbf45a9c37a3c865a14b, type: 2}
   m_sharedMaterial: {fileID: 4233735394282726293, guid: ba22e4812cebdbf45a9c37a3c865a14b, type: 2}
@@ -746,7 +746,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1311354552}
         m_TargetAssemblyTypeName: DataManagerScript, Assembly-CSharp
-        m_MethodName: DataToRemember
+        m_MethodName: ReadData
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -826,10 +826,14 @@ MonoBehaviour:
   catScript: {fileID: 0}
   tasks: {fileID: 0}
   vegScript: {fileID: 0}
+  doorScript: {fileID: 0}
+  pickUp: {fileID: 0}
   task1Complete: 0
   task2Complete: 0
   taskRunning: 0
   allCollectables: 0
+  interactables: []
+  indexOfCompleteTasks: 
   explorePoint: 0
   completionPoint: 0
   taskCollectables: 010000000200000003000000

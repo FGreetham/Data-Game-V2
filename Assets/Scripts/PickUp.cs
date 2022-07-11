@@ -36,7 +36,6 @@ public class PickUp : MonoBehaviour
             pickedUpObject.GetComponent<MeshCollider>().enabled = true;
             pickedUpObject.GetComponent<Rigidbody>().useGravity = true;
             data.interactables.Add(pickedUpObject.name);
-           // gameData.itemsInteractedWith.Add(pickedUpObject.name);
             return;
         }
 

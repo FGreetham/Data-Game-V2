@@ -13,6 +13,7 @@ TagManager:
   - Cat
   - Door
   - Trigger
+  - Interactable
   layers:
   - Default
   - TransparentFX

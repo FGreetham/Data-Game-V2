@@ -20,6 +20,7 @@ public class TaskScript : MonoBehaviour
     public int clickedNo;
     public bool[] taskActive = new bool[3];
     public bool[] taskComplete = new bool[3];
+    public bool allTasksComplete;
 
     [Header("GUI Elements")]
     public TextMeshProUGUI pressT;
@@ -33,6 +34,7 @@ public class TaskScript : MonoBehaviour
     private void Start()
     {
         cameraControls.GetComponent<CameraController>();
+        allTasksComplete = false;
     }
 
     private void OnTriggerStay(Collider other)
@@ -53,7 +55,7 @@ public class TaskScript : MonoBehaviour
         pressT.gameObject.SetActive(false);
       
         /*If task is active, "Come back when you're done" message appears.
-         * If task completed, success message appears */
+         * If task completed, success message appears and data is added. */
         if (taskActive[taskIndex] == true)
         {
             if (taskIndex == 1)
@@ -61,7 +63,6 @@ public class TaskScript : MonoBehaviour
                 if (cat.catCollected == true)
                 {
                     StartCoroutine("SuccessMessage");
-                    AddData();
                 }
                 else
                     StartCoroutine("ComeBack");
@@ -71,18 +72,43 @@ public class TaskScript : MonoBehaviour
                 if (vegScript.tomatoCount >= 5)
                 {
                     StartCoroutine("SuccessMessage");
-                    AddData();
-                }
+                                    }
                 else
                     StartCoroutine("ComeBack");
             }
 
         }
-     
+
         //If no task actively running, moves through array to next task.
-      if (taskActive[taskIndex] == false)
+        if (taskActive[taskIndex] == false)
         {
-            //How do I check 'if ALL indexed tasks are completed?'
+            for (int i = 0; i < taskComplete.Length; i++)
+            {
+                if (taskComplete[taskIndex++] == true)
+                {
+                    taskIndex += 2;
+                    Debug.Log("Is this working?");
+                    break;
+                }
+                else if (taskComplete[i] == false)
+                {
+                    cameraControls.enabled = false;
+                    controller.enabled = false;
+                    MoveThroughTasks();
+                    break;
+                }
+
+                else
+                    allTasksComplete = true;
+
+            }
+
+            if(allTasksComplete == true)
+            {
+                StartCoroutine("CompletedAll");
+            }
+
+        /*    //How do I check 'if ALL indexed tasks are completed?'
             if (taskComplete[1] == true && taskComplete[2] == true)     
            {
                 StartCoroutine("CompletedAll");   
@@ -94,7 +120,7 @@ public class TaskScript : MonoBehaviour
                 controller.enabled = false;
 
                 Invoke("MoveThroughTasks", 0);
-            }
+            } */
 
         }   
     }
@@ -109,7 +135,7 @@ public class TaskScript : MonoBehaviour
             taskIndex = 0;
         }
         else
-            taskIndex++;  //Task 1 is at index 1. Index 0 is skipped.
+            taskIndex++;  //Task 1 is at index 1. Index 0 is skipped on the first loop.
 
         npc1Tasks[taskIndex].SetActive(true);
     }
@@ -139,7 +165,7 @@ public class TaskScript : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         taskComplete[taskIndex] = true;
         taskActive[taskIndex] = false;
-      
+        AddData();
     }
     IEnumerator CompletedAll()
     {
