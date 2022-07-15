@@ -8,11 +8,11 @@ public class Vegetables : MonoBehaviour
  
     public GameObject pickUpMenu;
     RaycastHit hit;
-    public GameObject tempCollectible;
-    private int cabbageCount;
-    private int tomatoCount;
+    public GameObject tempCollectable;
+    public int cabbageCount;
+    public int tomatoCount;
     public CameraController cameraControls;
-    public float raycastRange;
+    public float raycastRange = 7f;
 
 
     private void Start()
@@ -30,7 +30,7 @@ public class Vegetables : MonoBehaviour
                 //Only objects tagged "Cabbage"
                 if (hit.collider.gameObject.tag == "Cabbage" || hit.collider.gameObject.tag == "Tomato")
                 {
-                    tempCollectible = hit.collider.gameObject;
+                    tempCollectable = hit.collider.gameObject;
                     //This brings up the text
                     pickUpMenu.gameObject.SetActive(true);
                     cameraControls.enabled = false;
@@ -47,7 +47,7 @@ public class Vegetables : MonoBehaviour
         //Destroys object that was hit by the raycast earlier. 
         Debug.Log("Y pressed");
         UpdateVegCount(1); 
-        Destroy(tempCollectible);
+        Destroy(tempCollectable);
         pickUpMenu.gameObject.SetActive(false);
         cameraControls.enabled = true;
 
@@ -60,21 +60,22 @@ public class Vegetables : MonoBehaviour
         cameraControls.enabled = true;
     }
 
-    void UpdateVegCount(int countToAdd)
+    public void UpdateVegCount(int countToAdd)
     {
-        if (tempCollectible.gameObject.tag == "Cabbage")
+        if (tempCollectable.gameObject.tag == "Cabbage")
             
         {
             cabbageCount += countToAdd;
-            Debug.Log("Cabbages = " + cabbageCount);
         }
 
-        if (tempCollectible.gameObject.tag == "Tomato")
+        if (tempCollectable.gameObject.tag == "Tomato")
         {
             tomatoCount += countToAdd;
             Debug.Log("Tomatoes = " + tomatoCount);
         }
     }
+
+
 
     /* DRAFT CODE FOR REF: 
         This code works to delete object when you simply click on the cabbage, no frills like text on the screen...

@@ -2,71 +2,60 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PickUp : MonoBehaviour
+public class PickUp : Interactable
 {
-    [SerializeField] private LayerMask pickUpMask;
-    [SerializeField] private float pickUpRange; 
-    [SerializeField] private Transform pickUpTarget;
+    private GameObject pickedUpObject;
+    [SerializeField] private Transform pickUpPoint;
+    [SerializeField] private DataManagerScript data;
 
-    
-    public Rigidbody currentObject;
-
-    // Start is called before the first frame update
-    void Start()
+    public override void OnPlayerInteract()
     {
-
+        if(pickedUpObject == null)
+       {
+           pickedUpObject = this.gameObject;
+           pickedUpObject.GetComponent<MeshCollider>().enabled = false;
+           pickedUpObject.GetComponent<Rigidbody>().useGravity = false;
+           pickedUpObject.transform.position = pickUpPoint.position;
+           pickedUpObject.transform.rotation = pickUpPoint.rotation;
+           pickedUpObject.transform.parent = GameObject.FindGameObjectWithTag("Pick Up").transform;
+       }
+        /*
+            else if (pickedUpObject != null)
+              {
+                  pickedUpObject.GetComponent<MeshCollider>().enabled = true;
+                  pickedUpObject.GetComponent<Rigidbody>().useGravity = true;
+                  pickedUpObject.transform.parent = null;
+                  DataManagerScript.instance.interactables.Add(pickedUpObject.name);
+                 // data.interactables.Add(pickedUpObject.name);
+                  return;
+              }*/
     }
 
-    // Update is called once per frame
-    /*  void Update()
+   /*  void OnMouseDown()
       {
-
-          if (currentObject)
+          Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+          if (Physics.Raycast(ray, out RaycastHit hit, pickUpRange))
           {
-              currentObject.useGravity = true;
-              currentObject = null;
-              return;
-          } 
+              pickedUpObject = hit.collider.gameObject;
+              pickedUpObject.GetComponent<MeshCollider>().enabled = false;
+              pickedUpObject.GetComponent<Rigidbody>().useGravity = false;
+              pickedUpObject.transform.position = pickUpPoint.position;
+              pickedUpObject.transform.parent = GameObject.FindGameObjectWithTag("Pick Up").transform;
+          }
 
-            if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit HitInfo, pickUpRange, pickUpMask))
-            {
-                currentObject = HitInfo.rigidbody;
-                currentObject.useGravity = false;
-            }
-        }
-}*/
-
-    void OnMouseDown()
-    {
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit, pickUpRange, pickUpMask))
-            {
-                currentObject = hit.rigidbody;
-                currentObject.useGravity = false;
-            }
-        
-    }
-
+      } */
     private void OnMouseUp()
     {
-        currentObject.useGravity = true;
-        currentObject = null;
-        return;
-    }
-
-    void FixedUpdate()
-    {
-        if (currentObject)
+        if (pickedUpObject)
         {
-            Vector3 directionToPoint = pickUpTarget.position - currentObject.position;
-            float distanceToPoint = directionToPoint.magnitude;
-            float speed = 12f;
-
-            currentObject.velocity = directionToPoint * speed * distanceToPoint;
+            
+            pickedUpObject.GetComponent<MeshCollider>().enabled = true;
+            pickedUpObject.GetComponent<Rigidbody>().useGravity = true;
+            pickedUpObject.transform.parent = null;
+            DataManagerScript.instance.interactables.Add(pickedUpObject.name);
+            pickedUpObject = null;
+            return;
         }
 
-    }
+    } 
 }

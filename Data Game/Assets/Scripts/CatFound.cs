@@ -2,14 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CatFound : MonoBehaviour
+public class CatFound : Interactable
 {
-    public bool catCollected;
 
-    private void OnTriggerEnter(Collider other)
+    //Click on the Cat to complete the task
+    public override void OnPlayerInteract()
     {
-        catCollected = true;
-        Debug.Log("Cat Found and Task 1 Complete");
+        DataManagerScript.instance.catsFound++;
         gameObject.SetActive(false);
     }
+
 }

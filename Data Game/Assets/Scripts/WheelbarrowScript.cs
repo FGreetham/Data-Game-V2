@@ -2,42 +2,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WheelbarrowScript : MonoBehaviour
+public class WheelbarrowScript : Interactable
 {
     public PlayerController player;
-
-    private float pickUpRange = 10f;
+   
+    [SerializeField] private Transform pushPoint;
     private GameObject pushedObject;
-    public Transform pushPoint;
+    private bool pickedUp;
 
-
-    // Update is called once per frame
-    void Update()
+    void Start()
     {
-        //WHY DOES IT NOT ALLOW ME TO CHECK IF SOMETHING IS THERE?
+        pickedUp = false;
+    }
 
-        /* if (pushedObject != null && Input.GetKeyDown(KeyCode.D)) 
+
+    public override void OnPlayerInteract()
+    {
+        if (pickedUp == false)
+        {
+            pushedObject = this.gameObject;
+            pickedUp = true;
+            UseWheelbarrow();
+        }
+
+
+        else if (pickedUp == true)
         {
             pushedObject.transform.parent = null;
-            speed = speed * 2;
-            return;
-        } */
-
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out RaycastHit hit, pickUpRange))
-        {
-            if (hit.collider.gameObject.tag == "Movable")
-            {
-                pushedObject = hit.collider.gameObject;
-                pushedObject.transform.position = pushPoint.position;
-                pushedObject.transform.parent = pushPoint.transform;
-                pushedObject.transform.rotation = pushPoint.rotation * Quaternion.Euler(10f, 0, 0);
-
-                player.speed = player.speed / 2;
-               
-
-            }
+            // pushedObject.transform.position - new y coord to put on floor
+            pushedObject.transform.rotation = pushPoint.rotation * Quaternion.Euler(0f, 0, 0);
+            player.speed = player.speed * 2;
+            pickedUp = false;
 
         }
     }
+    void UseWheelbarrow()
+    {
+        pushedObject.transform.position = pushPoint.position;
+        pushedObject.transform.parent = pushPoint.transform;
+        pushedObject.transform.rotation = pushPoint.rotation * Quaternion.Euler(8f, 0, 0);
+        player.speed = player.speed / 2;
+        DataManagerScript.instance.interactables.Add(pushedObject.name);
+    }
+    
 }

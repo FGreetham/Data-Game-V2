@@ -6,19 +6,23 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
     //Character movement variables
+    [Header("Movement")]
     public CharacterController controller;
     public float speed = 2.0f;
-    public float jumpHeight = 3.0f;
-    public float gravity = -9.8f;
-    Vector3 velocity;
+    private float gravity = -9.8f;
     public Transform groundCheck;
-    public float groundDistance = 0.4f;
-    public LayerMask groundMask;
+    public LayerMask groundMask; 
+    private float groundDistance = 0.4f;
     bool isGrounded;
+    Vector3 velocity;
 
+    //Raycast variables
+    RaycastHit hit;
+    private float raycastRange = 7;
 
     //NPC Task related variables
-    public bool playerInsideTrigger;
+    [Header("NPC Task Variables")]
+    private bool playerInsideTrigger;
     public GameObject tempNpc;
     public TextMeshProUGUI pressT;
     [SerializeField] private TaskScript npc1Script;
@@ -44,12 +48,17 @@ public class PlayerController : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
+        //Raycast interaction 
+        if(Input.GetMouseButtonDown(0))
+        {
+            InteractionCheck();
+        }
+
         //Tasks
         if (playerInsideTrigger == true && Input.GetKeyDown(KeyCode.T))
         {
             if (tempNpc.tag == "NPC1")
             {
-                Debug.Log("NPC1 Task started");
                 npc1Script.TaskStart();
             }
         }
@@ -77,18 +86,18 @@ public class PlayerController : MonoBehaviour
         tempNpc = null;
     }
 
-
-    //SPARE CODE I WAS USING TO TRY AND PUSH AN OBJECT - WILL DELETE EVENTUALLY
-    /*private void OnControllerColliderHit(ControllerColliderHit hit)
+    //Raycast code which can be used for objects which can be collected or interacted with
+    void InteractionCheck()
     {
-        //Vector3 offset = new Vector3(0, 0f, 0);
-        Vector3 pushDir = new Vector3(hit.moveDirection.x, 0, hit.moveDirection.z);
-
-        if (hit.collider.CompareTag("Movable"))
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        if (Physics.Raycast(ray, out hit, raycastRange))
         {
-            Debug.Log("Movable wheelbarrow");
-            //this.transform.position = hit.collider.transform.position + offset;
-            hit.collider.attachedRigidbody.velocity = pushDir * (speed/2);
-        }
-    } */
+            var interactableComponent = hit.transform.GetComponent<Interactable>();
+            if(interactableComponent != null)
+            {
+               interactableComponent.OnPlayerInteract();
+            }
+        }      
+    }
+
 }
