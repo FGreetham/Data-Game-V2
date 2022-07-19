@@ -9,17 +9,12 @@ public class TaskScript : MonoBehaviour
     //  [SerializeField] private DataManagerScript dataScript;
     [SerializeField] private CameraController cameraControls;
     [SerializeField] private CharacterController controller;
-    [SerializeField] private GameObject cat;
-
-
-    //[SerializeField] private Vegetables vegScript;
-    [SerializeField] private DoorLock doorScript;
     [SerializeField] private Transform target;
+    [SerializeField] private GameObject cat;
 
     [Header("Task Index")]
     public GameObject[] npc1Tasks;
     public int taskIndex;
-    public int clickedNo;
     public bool[] taskActive = new bool[3];
     public bool[] taskComplete = new bool[3];
 

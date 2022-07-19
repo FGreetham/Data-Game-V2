@@ -5,8 +5,6 @@ using TMPro;
 
 public class Vegetables : Interactable
 {
-
-
     [SerializeField] private CameraController cameraControls;
     [SerializeField] private PlayerController player;
     [SerializeField] private GameObject pickUpMenu;

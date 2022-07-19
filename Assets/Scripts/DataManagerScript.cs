@@ -4,15 +4,7 @@ using UnityEngine;
 
 public class DataManagerScript : MonoBehaviour
 {
-    //References
-    [Header("Script References")]
     public static DataManagerScript instance;
-    [SerializeField] private CatFound catScript;
-    [SerializeField] private TaskScript tasks;
-    [SerializeField] private Vegetables vegScript;
-    [SerializeField] private DoorLock doorScript;
-    [SerializeField] private PickUp pickUp;
-
 
     //Variable Set Up
     [Header("Collectable Variables")]

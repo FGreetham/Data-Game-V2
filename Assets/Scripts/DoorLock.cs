@@ -6,11 +6,6 @@ using TMPro;
 
 public class DoorLock : Interactable
 {
-    //Variables to Close the Door
-   // RaycastHit hit;
-   // [SerializeField] private float raycastRange = 7;
-    //[SerializeField] private PlayerController playerScript; > If Raycast could be in one centralised script
-
     //References and Variables
     [SerializeField] private CameraController cameraControls;
     [SerializeField] private float rotation;

@@ -6,7 +6,7 @@ public class PickUp : Interactable
 {
     private GameObject pickedUpObject;
     [SerializeField] private Transform pickUpPoint;
-    [SerializeField] private DataManagerScript data;
+
 
     public override void OnPlayerInteract()
     {
