@@ -2,26 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CatFound : MonoBehaviour
+public class CatFound : Interactable
 {
-    public bool catCollected;
-    private float raycastRange = 20f;
 
     //Click on the Cat to complete the task
-    private void Update()
+    public override void OnPlayerInteract()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Input.GetMouseButtonDown(0) && Physics.Raycast(ray, out RaycastHit hit, raycastRange))
-        {
-            if (hit.collider.gameObject.CompareTag("Cat")) 
-            {
-                catCollected = true;
-                gameObject.SetActive(false);
-            }
-
-        }
+        DataManagerScript.instance.catsFound++;
+        gameObject.SetActive(false);
     }
-
 
 }

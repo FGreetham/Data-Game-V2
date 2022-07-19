@@ -2,42 +2,36 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PickUp : MonoBehaviour
+public class PickUp : Interactable
 {
-    public GameObject pickedUpObject;
-    [SerializeField] private float pickUpRange;
+    private GameObject pickedUpObject;
     [SerializeField] private Transform pickUpPoint;
     [SerializeField] private DataManagerScript data;
-    [SerializeField] private GameData gameData;
 
-    /*Semi-works. Has to be attached to the gameobject to pick up. 
-     * Still floats - can't get physics to turn off
-     * When it lands - it falls through the ground sometimes. Is this a problem with the terrian physics? */
-
-    void OnMouseDown()
+    public override void OnPlayerInteract()
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        if (Physics.Raycast(ray, out RaycastHit hit, pickUpRange))
+        if (pickedUpObject == null)
         {
-            pickedUpObject = hit.collider.gameObject;
+            pickedUpObject = this.gameObject;
             pickedUpObject.GetComponent<MeshCollider>().enabled = false;
             pickedUpObject.GetComponent<Rigidbody>().useGravity = false;
             pickedUpObject.transform.position = pickUpPoint.position;
+            pickedUpObject.transform.rotation = pickUpPoint.rotation;
             pickedUpObject.transform.parent = GameObject.FindGameObjectWithTag("Pick Up").transform;
         }
-
     }
-
     private void OnMouseUp()
     {
         if (pickedUpObject)
         {
-            pickedUpObject.transform.parent = null;
+            
             pickedUpObject.GetComponent<MeshCollider>().enabled = true;
             pickedUpObject.GetComponent<Rigidbody>().useGravity = true;
-            data.interactables.Add(pickedUpObject.name);
+            pickedUpObject.transform.parent = null;
+            DataManagerScript.instance.interactables.Add(pickedUpObject.name);
+            pickedUpObject = null;
             return;
         }
 
-    }
+    } 
 }

@@ -6,11 +6,13 @@ using TMPro;
 public class TaskScript : MonoBehaviour
 {
     [Header("Script References")]
-    [SerializeField] private DataManagerScript dataScript;
+    //  [SerializeField] private DataManagerScript dataScript;
     [SerializeField] private CameraController cameraControls;
     [SerializeField] private CharacterController controller;
-    [SerializeField] private CatFound cat;
-    [SerializeField] private Vegetables vegScript;
+    [SerializeField] private GameObject cat;
+
+
+    //[SerializeField] private Vegetables vegScript;
     [SerializeField] private DoorLock doorScript;
     [SerializeField] private Transform target;
 
@@ -20,7 +22,6 @@ public class TaskScript : MonoBehaviour
     public int clickedNo;
     public bool[] taskActive = new bool[3];
     public bool[] taskComplete = new bool[3];
-    public bool allTasksComplete;
 
     [Header("GUI Elements")]
     public TextMeshProUGUI pressT;
@@ -34,7 +35,6 @@ public class TaskScript : MonoBehaviour
     private void Start()
     {
         cameraControls.GetComponent<CameraController>();
-        allTasksComplete = false;
     }
 
     private void OnTriggerStay(Collider other)
@@ -53,120 +53,99 @@ public class TaskScript : MonoBehaviour
     public void TaskStart()
     {
         pressT.gameObject.SetActive(false);
-      
-        /*If task is active, "Come back when you're done" message appears.
-         * If task completed, success message appears and data is added. */
+
+        //If task is active, "Come back when you're done" message appears.
+        //If task completed, success message appears and data is added.
         if (taskActive[taskIndex] == true)
         {
+            /*    if (DataManagerScript.instance.tasksComplete >= 3)
+                {
+                    StartCoroutine("CompletedAll");
+                }
+
+
+                else*/
             if (taskIndex == 1)
             {
-                if (cat.catCollected == true)
+                if (DataManagerScript.instance.catsFound >= 1)
                 {
                     StartCoroutine("SuccessMessage");
                 }
                 else
                     StartCoroutine("ComeBack");
             }
-            if (taskIndex == 2)
+            else if (taskIndex == 2)
             {
-                if (vegScript.tomatoCount >= 5)
+                if (DataManagerScript.instance.tomatoesCollected >= 5)
                 {
                     StartCoroutine("SuccessMessage");
-                                    }
+                }
                 else
                     StartCoroutine("ComeBack");
             }
-
         }
 
         //If no task actively running, moves through array to next task.
         if (taskActive[taskIndex] == false)
         {
-            for (int i = 0; i < taskComplete.Length; i++)
-            {
-                if (taskComplete[taskIndex++] == true)
-                {
-                    taskIndex += 2;
-                    Debug.Log("Is this working?");
-                    break;
-                }
-                else if (taskComplete[i] == false)
-                {
-                    cameraControls.enabled = false;
-                    controller.enabled = false;
-                    MoveThroughTasks();
-                    break;
-                }
-
-                else
-                    allTasksComplete = true;
-
-            }
-
-            if(allTasksComplete == true)
-            {
-                StartCoroutine("CompletedAll");
-            }
-
-        /*    //How do I check 'if ALL indexed tasks are completed?'
-            if (taskComplete[1] == true && taskComplete[2] == true)     
-           {
-                StartCoroutine("CompletedAll");   
-            }
-            //How do I check which taskIndex is complete... if so, need to skip it.
-            else
-            {
-                cameraControls.enabled = false;
-                controller.enabled = false;
-
-                Invoke("MoveThroughTasks", 0);
-            } */
-
-        }   
+            CheckIfComplete();
+        }
     }
 
-    public void MoveThroughTasks()
+    void CheckIfComplete()
     {
-        //How do I check which taskIndex is complete... if so, need to skip it.
-        taskIndex = (taskIndex++) % npc1Tasks.Length;
+        MoveThroughTasks(1);
 
-        if (npc1Tasks.Length-1 == taskIndex)
+        //If the current task isn't complete, will give the option to start the task at that index.
+        if (taskComplete[taskIndex] == false)
+        {
+            cameraControls.enabled = false;
+            controller.enabled = false;
+            npc1Tasks[taskIndex].SetActive(true);
+        }
+
+        //If task at current index is completed already, use recursion to move through array of tasks again and recheck.
+        else if(taskComplete[taskIndex] == true)
+        {
+            CheckIfComplete();
+        }
+    }
+
+    public void MoveThroughTasks(int increase)
+    {
+       
+        taskIndex = taskIndex % npc1Tasks.Length;
+
+        if (npc1Tasks.Length - 1 == taskIndex)
         {
             taskIndex = 0;
         }
         else
-            taskIndex++;  //Task 1 is at index 1. Index 0 is skipped on the first loop.
-
-        npc1Tasks[taskIndex].SetActive(true);
-    }
-
-    public void TaskExit()
-    {
-        npc1Tasks[taskIndex].SetActive(false);
-        cameraControls.enabled = true;
-        controller.enabled = true;
-    }
-
-    //Tracking if the player clicks no on a task
-    public void ClickedNo()
-    {
-        clickedNo++;
-        Invoke("TaskExit", 0);
+            //Task 1 is at index 1. Index 0 is skipped on the first loop and then it iterates back through.
+            taskIndex += increase; 
     }
 
 
-//Below are the GUI for messages when returning to the NPC
+
+    //Below are the GUI for messages when returning to the NPC
     //If task complete then Success message appears
     IEnumerator SuccessMessage()
     {
-        successMsg.SetActive(true);
-        yield return new WaitForSeconds(2f);
-        successMsg.SetActive(false);
-        yield return new WaitForSeconds(0.5f);
-        taskComplete[taskIndex] = true;
-        taskActive[taskIndex] = false;
-        AddData();
+        if (DataManagerScript.instance.tasksComplete >= 2)
+        {
+            StartCoroutine("CompletedAll");
+        }
+
+        else
+        {
+            successMsg.SetActive(true);
+            yield return new WaitForSeconds(2f);
+            successMsg.SetActive(false);
+            yield return new WaitForSeconds(0.5f);
+            AddData();
+        }
     }
+
     IEnumerator CompletedAll()
     {
         allTasksMsg.SetActive(true);
@@ -180,25 +159,31 @@ public class TaskScript : MonoBehaviour
         yield return new WaitForSeconds(2.5f);
         comeBack.SetActive(false);
     }
+    void AddData()
+    {
+        taskComplete[taskIndex] = true;
+        taskActive[taskIndex] = false;
+        DataManagerScript.instance.taskRunning = false;
+        DataManagerScript.instance.indexOfCompleteTasks.Add(taskIndex);
+        DataManagerScript.instance.tasksComplete++;
+    }
 
-//Below is all UI for Tasks 1-3
+    //Below is all UI for Tasks 1-3
 
     //Button to start Task1
     public void Task1()
     {
         npc1Tasks[taskIndex].SetActive(false);
         task1b.gameObject.SetActive(true);
-        
     }
 
     //This is the "Ok" button click on Task1b. 
-    public void Task1Started()  
+    public void Task1Started()
     {
-        dataScript.taskRunning = true;
-        taskActive[taskIndex] = true;
+        UpdateTaskStatus();
         cat.gameObject.SetActive(true);
         task1b.gameObject.SetActive(false);
-        Invoke("TaskExit", 0);
+        TaskExit();
     }
 
     //Buttons to start task 2
@@ -211,19 +196,29 @@ public class TaskScript : MonoBehaviour
     //This is the "Ok" button click on Task2b.
     public void Task2Started()
     {
-        dataScript.taskRunning = true;
-        taskActive[taskIndex] = true;
+        UpdateTaskStatus();
         task2b.gameObject.SetActive(false);
-        Invoke("TaskExit", 0);
-    } 
+        TaskExit();
+    }
 
-    void AddData()
+    void UpdateTaskStatus()
     {
-        //Doesn't work just yet 
-        if(taskComplete[taskIndex] == true)
-        {
-            dataScript.indexOfCompleteTasks.Add(taskIndex);
-        }
+        taskActive[taskIndex] = true;
+        DataManagerScript.instance.taskRunning = true;
+    }
+
+    public void TaskExit()
+    {
+        npc1Tasks[taskIndex].SetActive(false);
+        cameraControls.enabled = true;
+        controller.enabled = true;
+    }
+
+    //Tracking if the player clicks no on a task
+    public void ClickedNo()
+    {
+        DataManagerScript.instance.clickedNo++;
+        TaskExit();
     }
 }
 

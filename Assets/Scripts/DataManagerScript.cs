@@ -9,30 +9,33 @@ public class DataManagerScript : MonoBehaviour
     public static DataManagerScript instance;
     [SerializeField] private CatFound catScript;
     [SerializeField] private TaskScript tasks;
+    [SerializeField] private Vegetables vegScript;
     [SerializeField] private DoorLock doorScript;
     [SerializeField] private PickUp pickUp;
 
 
-    [Header("Task Status")]
-    public bool task1Complete;
-    public bool task2Complete;
-    public bool taskRunning;
- 
-
     //Variable Set Up
-    [SerializeField] private int allCollectables;
+    [Header("Collectable Variables")]
     public List<string> interactables;
-    public List<int> indexOfCompleteTasks;
-       
-
-    [SerializeField] private int explorePoint;
-    [SerializeField] private int completionPoint;
-    public int[] taskCollectables;
-    public int[] taskInteractables;
-
     public int catsFound = 0;
     public int cabbagesCollected = 0;
     public int tomatoesCollected = 0;
+
+    [Header("Task Variables")]
+    public int tasksComplete;
+    public List<int> indexOfCompleteTasks;
+    public int clickedNo;
+    public bool taskRunning;
+    // public int[] taskCollectables;
+    // public int[] taskInteractables;
+    //  public bool[] taskActive = new bool[3];
+    // public bool[] taskComplete = new bool[3];
+
+    public bool doorClosed;
+    public bool doorLocked;
+    public int doorAttempts;
+
+
 
     [Header("JSON Data")]
     string filename = "data.json";
@@ -58,6 +61,7 @@ public class DataManagerScript : MonoBehaviour
     {
         path = Application.persistentDataPath + "/" + filename;
         print(path);
+        taskRunning = false;
     }
 
 
@@ -68,7 +72,7 @@ public class DataManagerScript : MonoBehaviour
     
         if(Input.GetKeyDown(KeyCode.N))
         {
-           SetData();
+           SaveData();
         }
         if (Input.GetKeyDown(KeyCode.R))
         {
@@ -76,7 +80,7 @@ public class DataManagerScript : MonoBehaviour
         }
     }
 
-    public void SetData()
+    public void SaveData()
     {
         //Player Identifiers
         gameData.date = System.DateTime.Now.ToShortDateString();
@@ -87,25 +91,26 @@ public class DataManagerScript : MonoBehaviour
 
 
         //Player Data
-        gameData.didPlayerCloseDoor = doorScript.doorClosed;
-        gameData.didPlayerLockDoor = doorScript.doorLocked;
-        gameData.numberOfTasksPlayerRejected = tasks.clickedNo;
-        gameData.moreThanOneAttemptToLock = doorScript.attempts;
+        //Door task
+        gameData.didPlayerCloseDoor = doorClosed;
+        gameData.didPlayerLockDoor = doorLocked;
+        gameData.numberOfAttemptsToLockDoor = doorAttempts + 1;
 
-        //Having issues with converting bool to int for whether the tasks are active or complete.
-        //gameData.numberOfTasksStillRunning = tasks.taskActive[tasks.taskIndex].;
-       // gameData.numberOfTasksCompleted = tasks.taskComplete[tasks.taskIndex];
+        //NPC Tasks
+        gameData.numberOfTimesPlayerClickedNoOnTask = clickedNo;
         gameData.indexOfTasksCompleted = indexOfCompleteTasks;
+        gameData.numberOfTasksCompleted = tasksComplete;
+        gameData.isATaskStillRunning = taskRunning;
 
-        gameData.itemsInteractedWith = interactables;
-
-        gameData.totalItemsPickedUp = cabbagesCollected + tomatoesCollected;
+        //Items collected
+        gameData.totalItemsPickedUp = cabbagesCollected + tomatoesCollected + catsFound;
         gameData.cabbagesCollected = cabbagesCollected;
         gameData.tomatosCollected = tomatoesCollected;
-
-        SaveData();
+        gameData.catsCollected = catsFound;
+        gameData.itemsInteractedWith = interactables;
+        SetDataToJSON();
     }
-    public void SaveData()
+    public void SetDataToJSON()
     { 
         string savedContents = JsonUtility.ToJson(gameData, true);
         System.IO.File.WriteAllText(path, savedContents);
@@ -135,41 +140,4 @@ public class DataManagerScript : MonoBehaviour
         
     }
 
-    public void DataToRemember()
-    {
-        //How many times player clicked no on a task?
-        Debug.Log(tasks.clickedNo);
-
-        //How much the player explored?
-        Debug.Log(explorePoint);
-        Debug.Log("Player picked up " + allCollectables + " object(s).");
-
-        //How many tasks did the player complete?
-        Debug.Log("Player completed " + completionPoint + " task(s).");
-        if (task1Complete == true)
-        {
-            Debug.Log("Task 1 was completed");
-        }
-        if (task2Complete == true)
-        {
-            Debug.Log("Task 2 was completed");
-        }
-
-        //Did they leave without finishing a task?
-        if(taskRunning == true)
-        {
-            Debug.Log("Task left uncomplete");
-        }
-
-
-        if(doorScript.doorLocked == true)
-        {
-            Debug.Log("Locked the door");
-        }
-        if(doorScript.doorLocked == false && doorScript.doorClosed)
-        {
-            Debug.Log(PlayerPrefs.GetString("PlayerName") + " closed but didn't lock the door.");
-        }
-
-    }
 }

@@ -6,22 +6,24 @@ using TMPro;
 public class PlayerController : MonoBehaviour
 {
     //Character movement variables
+    [Header("Movement")]
     public CharacterController controller;
     public float speed = 2.0f;
-    public float jumpHeight = 3.0f;
-    public float gravity = -9.8f;
-    Vector3 velocity;
+    private float gravity = -9.8f;
     public Transform groundCheck;
-    public float groundDistance = 0.4f;
-    public LayerMask groundMask;
+    public LayerMask groundMask; 
+    private float groundDistance = 0.4f;
     bool isGrounded;
+    Vector3 velocity;
 
     //Raycast variables
     RaycastHit hit;
-    [SerializeField] private float raycastRange = 7;
+    private float raycastRange = 7;
+    //public GameObject tempCollectable;
 
     //NPC Task related variables
-    public bool playerInsideTrigger;
+    [Header("NPC Task Variables")]
+    private bool playerInsideTrigger;
     public GameObject tempNpc;
     public TextMeshProUGUI pressT;
     [SerializeField] private TaskScript npc1Script;
@@ -47,9 +49,10 @@ public class PlayerController : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
 
-        if (Input.GetMouseButtonDown(0))
+        //Raycast interaction 
+        if(Input.GetMouseButton(0))
         {
-            DoInteractionCheck();
+            InteractionCheck();
         }
 
         //Tasks
@@ -65,8 +68,6 @@ public class PlayerController : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
-
-        print(other.gameObject.tag);
         if (other.gameObject.tag == "NPC1")
         {
             tempNpc = other.gameObject;
@@ -74,6 +75,8 @@ public class PlayerController : MonoBehaviour
             pressT.gameObject.SetActive(true);
         }
 
+        //Autosave the player data at this point
+        DataManagerScript.instance.SaveData();
     }
 
     //When character leaves the collider, TaskScript can't be triggered.
@@ -84,21 +87,19 @@ public class PlayerController : MonoBehaviour
         tempNpc = null;
     }
 
-    void DoInteractionCheck()
+    //Raycast code which can be used for objects which can be collected or interacted with
+    public void InteractionCheck()
     {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out RaycastHit hit, raycastRange))
+        if (Physics.Raycast(ray, out hit, raycastRange))
         {
-            // Check if the GameObject we hit has a component that inherits from Collectable
-            var collectableComponent = hit.transform.GetComponent<Collectable>();
-            if (collectableComponent != null)
-            {
-                // If it does, call that component's OnPlayerCollect method
-                // Note that we don't need to know what kind of Collectable it is - this is polymorphism!
-                collectableComponent.OnPlayerCollect();
+            // tempCollectable = hit.collider.gameObject;
+            var interactableComponent = hit.collider.GetComponent<Interactable>();
+            if(interactableComponent != null)
+            {               
+               interactableComponent.OnPlayerInteract();
             }
-        }
+        }      
     }
 
 }

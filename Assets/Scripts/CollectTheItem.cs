@@ -1,26 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
-public class Vegetables : Interactable
+public class CollectTheItem : Interactable
 {
-
-
-    [SerializeField] private CameraController cameraControls;
-    [SerializeField] private PlayerController player;
+    public CameraController cameraControls;
     [SerializeField] private GameObject pickUpMenu;
+
 
     private void Start()
     {
+      //  pickUpMenu = GameObject.Find("PickUpMenu");
         cameraControls.GetComponent<CameraController>();
+        
     }
 
     public override void OnPlayerInteract()
     {
         ShowMenu();
     }
-
 
     private void ShowMenu()
     {
@@ -34,24 +32,27 @@ public class Vegetables : Interactable
         cameraControls.enabled = true;
     }
 
-
+    //Nearly works but the buttons on PickUpMenu are only assigend to one script at a time.. 
+    //Fine if only on 1 object but as this script is for multiple objects, it doesn't work.
+    //How can I make the buttons work when needing to be assigned to all collectable objects?
     public void PickUpItem()
+
     {
         UpdateCount();
         HideMenu();
-
-        //If i had the script on the player - the buttons would work on the Pick Up Menu, but to work out which object to delete - needs to be in a temp collectable.
-        //player.tempCollectable.SetActive(false);
+        
+        gameObject.SetActive(false);
     }
 
     public void DontPickUp()
     {
         HideMenu();
     }
+
     public void UpdateCount()
     {
         if (tag == "Cabbage")
-            
+
         {
             DataManagerScript.instance.cabbagesCollected++;
         }

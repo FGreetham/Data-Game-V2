@@ -8,19 +8,19 @@ public class GameData
     public string playerName;
     public string date = "";
     public string time = "";
-    public string timePlayed2;
-    public Time timePlayed;
+   // public Time timePlayed;
 
     public bool didPlayerCloseDoor;
     public bool didPlayerLockDoor;
-    public int moreThanOneAttemptToLock;
-    public int numberOfTasksPlayerRejected;
-    public int numberOfTasksStillRunning;
-   // public int numberOfTasksCompleted;
+    public int numberOfAttemptsToLockDoor;
+    public int numberOfTasksCompleted;
     public List<int> indexOfTasksCompleted;
+    public int numberOfTimesPlayerClickedNoOnTask;
+    public bool isATaskStillRunning;
     public int totalItemsPickedUp;
     public int tomatosCollected;
     public int cabbagesCollected;
+    public int catsCollected;
 
     public List<string> itemsInteractedWith;
 
