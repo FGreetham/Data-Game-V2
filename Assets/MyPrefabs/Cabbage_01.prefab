@@ -12,7 +12,8 @@ GameObject:
   - component: {fileID: 5025210827136268613}
   - component: {fileID: 5025210827137235845}
   - component: {fileID: 1411106050}
-  m_Layer: 0
+  - component: {fileID: 1006291888}
+  m_Layer: 8
   m_Name: Cabbage_01
   m_TagString: Cabbage
   m_Icon: {fileID: 0}
@@ -95,3 +96,15 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.34156132
   m_Center: {x: -0.011427641, y: 0.16427517, z: 0.02362156}
+--- !u!114 &1006291888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5025210827135034693}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0594e58f87ff06c45bad31be312209f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

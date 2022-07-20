@@ -12,7 +12,7 @@ public class Exit : MonoBehaviour
 
     public void OnTriggerEnter()
     {
-        dataScript.SetData();
+        dataScript.SaveData();
         exitMenu.SetActive(true);
         cameraControls.enabled = false;
 

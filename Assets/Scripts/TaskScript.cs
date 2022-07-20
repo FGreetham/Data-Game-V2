@@ -6,9 +6,8 @@ using TMPro;
 public class TaskScript : MonoBehaviour
 {
     [Header("Script References")]
-    //  [SerializeField] private DataManagerScript dataScript;
-    [SerializeField] private CameraController cameraControls;
-    [SerializeField] private CharacterController controller;
+    private CameraController cameraControls;
+    private CharacterController playerController;
     [SerializeField] private Transform target;
     [SerializeField] private GameObject cat;
 
@@ -29,7 +28,9 @@ public class TaskScript : MonoBehaviour
 
     private void Start()
     {
-        cameraControls.GetComponent<CameraController>();
+      //  cameraControls.GetComponent<CameraController>();
+        cameraControls = FindObjectOfType<CameraController>();
+        playerController = FindObjectOfType<CharacterController>();
     }
 
     private void OnTriggerStay(Collider other)
@@ -49,17 +50,10 @@ public class TaskScript : MonoBehaviour
     {
         pressT.gameObject.SetActive(false);
 
+        //If task completed, "success" message appears and data is added.
         //If task is active, "Come back when you're done" message appears.
-        //If task completed, success message appears and data is added.
         if (taskActive[taskIndex] == true)
         {
-            /*    if (DataManagerScript.instance.tasksComplete >= 3)
-                {
-                    StartCoroutine("CompletedAll");
-                }
-
-
-                else*/
             if (taskIndex == 1)
             {
                 if (DataManagerScript.instance.catsFound >= 1)
@@ -95,7 +89,7 @@ public class TaskScript : MonoBehaviour
         if (taskComplete[taskIndex] == false)
         {
             cameraControls.enabled = false;
-            controller.enabled = false;
+            playerController.enabled = false;
             npc1Tasks[taskIndex].SetActive(true);
         }
 
@@ -123,6 +117,7 @@ public class TaskScript : MonoBehaviour
 
 
     //Below are the GUI for messages when returning to the NPC
+
     //If task complete then Success message appears
     IEnumerator SuccessMessage()
     {
@@ -206,7 +201,7 @@ public class TaskScript : MonoBehaviour
     {
         npc1Tasks[taskIndex].SetActive(false);
         cameraControls.enabled = true;
-        controller.enabled = true;
+        playerController.enabled = true;
     }
 
     //Tracking if the player clicks no on a task

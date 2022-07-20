@@ -4,15 +4,17 @@ using UnityEngine;
 using TMPro;
 
 
-public class DoorLock : Interactable
+public class Door : MonoBehaviour
 {
+    //This Door class is not inheriting from the Interactable class - because the door moves smoothly when holding the button down instead of individual clicks.
+    //This causes some issues with other items if I change this at the controller level in "Camera Controller".
+
     //References and Variables
-    [SerializeField] private CameraController cameraControls;
-    [SerializeField] private float rotation;
-    [SerializeField] private float targetRotation;
-    public bool doorClosed;
-    public bool doorLocked;
-    public int attempts;
+    private CameraController cameraControls;
+    private float rotation;
+    private float targetRotation;
+    private float raycastRange = 7f;
+    RaycastHit hit;
 
     //GUI variables
     public GameObject onScreen;
@@ -24,28 +26,15 @@ public class DoorLock : Interactable
     public GameObject tryAgain;
     public GameObject giveUp;
 
-    public override void OnPlayerInteract()
-    {
-        if (DataManagerScript.instance.doorClosed == false && tag == "Door")
-        {
-            transform.localEulerAngles = new Vector3(-90, 0, rotation);
-            rotation = Mathf.Lerp(rotation, targetRotation, Time.deltaTime);
 
-            if (DataManagerScript.instance.doorClosed == false)
-            {
-                //Instructions to move the door GUI
-                StartCoroutine("Instructions");
-            }
-        }
-    }
     void Update()
     {
-       if (DataManagerScript.instance.doorClosed == false)
-        { /*
-            if (Input.GetMouseButton(0))
+        if(Input.GetMouseButton(0))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hit, raycastRange))
             {
-                Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-                if (Physics.Raycast(ray, out hit, raycastRange) && hit.collider.gameObject.tag == "Door")
+                if (DataManagerScript.instance.doorClosed == false && hit.collider.tag == "Door")
                 {
                     transform.localEulerAngles = new Vector3(-90, 0, rotation);
                     rotation = Mathf.Lerp(rotation, targetRotation, Time.deltaTime);
@@ -55,11 +44,13 @@ public class DoorLock : Interactable
                         //Instructions to move the door GUI
                         StartCoroutine("Instructions");
                     }
-
                 }
-            } */
+            }
+        }
+    
 
-            //Move door back and forth - shift opens it again.
+    if (DataManagerScript.instance.doorClosed == false)
+        { 
             if (Input.GetKeyDown(KeyCode.LeftShift))
             {
                 targetRotation = 40f;
@@ -88,6 +79,7 @@ public class DoorLock : Interactable
         if (inputField.GetComponent<TMP_InputField>().text == "1111")
         {
             DataManagerScript.instance.doorLocked = true;
+            DataManagerScript.instance.doorAttempts++;
             cameraControls.enabled = true;
             lockDoor.SetActive(false);
             StartCoroutine("SuccessMsg");
@@ -135,7 +127,8 @@ public class DoorLock : Interactable
 
     //Start the variables so the door will close on first click.
     void Start()
-    {   
+    {
+        cameraControls = FindObjectOfType<CameraController>();
         DataManagerScript.instance.doorLocked = false;
         DataManagerScript.instance.doorClosed = false;
         targetRotation = 190f;

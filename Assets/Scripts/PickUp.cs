@@ -5,9 +5,14 @@ using UnityEngine;
 public class PickUp : Interactable
 {
     private GameObject pickedUpObject;
-    [SerializeField] private Transform pickUpPoint;
+   // [SerializeField] private Transform pickUpPoint;
+    private GameObject point;
 
 
+    void Start()
+    {
+        point = GameObject.Find("Pick Up Point");
+    }    
     public override void OnPlayerInteract()
     {
         if (pickedUpObject == null)
@@ -15,8 +20,8 @@ public class PickUp : Interactable
             pickedUpObject = this.gameObject;
             pickedUpObject.GetComponent<MeshCollider>().enabled = false;
             pickedUpObject.GetComponent<Rigidbody>().useGravity = false;
-            pickedUpObject.transform.position = pickUpPoint.position;
-            pickedUpObject.transform.rotation = pickUpPoint.rotation;
+            pickedUpObject.transform.position = point.transform.position;
+            pickedUpObject.transform.rotation = point.transform.rotation;
             pickedUpObject.transform.parent = GameObject.FindGameObjectWithTag("Pick Up").transform;
         }
     }

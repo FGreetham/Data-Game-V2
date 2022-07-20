@@ -18,15 +18,10 @@ public class DataManagerScript : MonoBehaviour
     public List<int> indexOfCompleteTasks;
     public int clickedNo;
     public bool taskRunning;
-    // public int[] taskCollectables;
-    // public int[] taskInteractables;
-    //  public bool[] taskActive = new bool[3];
-    // public bool[] taskComplete = new bool[3];
 
     public bool doorClosed;
     public bool doorLocked;
     public int doorAttempts;
-
 
 
     [Header("JSON Data")]
@@ -60,12 +55,6 @@ public class DataManagerScript : MonoBehaviour
  
     void Update() 
     {
-        
-    
-        if(Input.GetKeyDown(KeyCode.N))
-        {
-           SaveData();
-        }
         if (Input.GetKeyDown(KeyCode.R))
         {
             ReadData();
@@ -81,13 +70,12 @@ public class DataManagerScript : MonoBehaviour
         //Trying to work out time player spent on game.
         //gameData.timePlayed = System.DateTime.Now - timeOnAwake;
 
-
         //Player Data
         //Door task
         gameData.didPlayerCloseDoor = doorClosed;
         gameData.didPlayerLockDoor = doorLocked;
-        gameData.numberOfAttemptsToLockDoor = doorAttempts + 1;
-
+        gameData.numberOfAttemptsToLockDoor = doorAttempts;
+        
         //NPC Tasks
         gameData.numberOfTimesPlayerClickedNoOnTask = clickedNo;
         gameData.indexOfTasksCompleted = indexOfCompleteTasks;
