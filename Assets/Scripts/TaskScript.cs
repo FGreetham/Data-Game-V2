@@ -19,9 +19,10 @@ public class TaskScript : MonoBehaviour
 
     [Header("GUI Elements")]
     public TextMeshProUGUI pressT;
-    public GameObject task1;
+    //public GameObject task1;
     public GameObject task1b;
     public GameObject task2b;
+    public GameObject task0b;
     public GameObject comeBack;
     public GameObject successMsg;
     public GameObject allTasksMsg;
@@ -72,6 +73,15 @@ public class TaskScript : MonoBehaviour
                 else
                     StartCoroutine("ComeBack");
             }
+            else if (taskIndex == 0)
+            { 
+                if (DataManagerScript.instance.planksPlaced >= 3)
+                {
+                    StartCoroutine("SuccessMessage");
+                }
+                else
+                    StartCoroutine("ComeBack");
+            }
         }
 
         //If no task actively running, moves through array to next task.
@@ -96,7 +106,12 @@ public class TaskScript : MonoBehaviour
         //If task at current index is completed already, use recursion to move through array of tasks again and recheck.
         else if(taskComplete[taskIndex] == true)
         {
-            CheckIfComplete();
+            if (DataManagerScript.instance.tasksComplete == 3)
+                return;
+            else if (DataManagerScript.instance.tasksComplete < 3)
+            {
+                CheckIfComplete();
+            }
         }
     }
 
@@ -141,6 +156,7 @@ public class TaskScript : MonoBehaviour
         allTasksMsg.SetActive(true);
         yield return new WaitForSeconds(2.5f);
         allTasksMsg.SetActive(false);
+        AddData();
         this.enabled = false;
     }
     IEnumerator ComeBack()
@@ -167,7 +183,7 @@ public class TaskScript : MonoBehaviour
         task1b.gameObject.SetActive(true);
     }
 
-    //This is the "Ok" button click on Task1b. 
+    //This is the "Ok" button click on Task[1]. 
     public void Task1Started()
     {
         UpdateTaskStatus();
@@ -183,7 +199,7 @@ public class TaskScript : MonoBehaviour
         task2b.gameObject.SetActive(true);
     }
 
-    //This is the "Ok" button click on Task2b.
+    //This is the "Ok" button click on Task[2].
     public void Task2Started()
     {
         UpdateTaskStatus();
@@ -191,6 +207,20 @@ public class TaskScript : MonoBehaviour
         TaskExit();
     }
 
+    //Buttons to start task at index 0
+    public void TaskIndex0()
+    {
+        npc1Tasks[taskIndex].SetActive(false);
+        task0b.gameObject.SetActive(true);
+    }
+
+    //This is the "Ok" button click on Task[0].
+    public void TaskIndex0Started()
+    {
+        UpdateTaskStatus();
+        task0b.gameObject.SetActive(false);
+        TaskExit();
+    }
     void UpdateTaskStatus()
     {
         taskActive[taskIndex] = true;

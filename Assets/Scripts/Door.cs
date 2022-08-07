@@ -76,7 +76,7 @@ public class Door : MonoBehaviour
     //GUI to put in password to lock the door
     public void Password()
     {
-        if (inputField.GetComponent<TMP_InputField>().text == "1111")
+        if (inputField.GetComponent<TMP_InputField>().text == "Garden247")
         {
             DataManagerScript.instance.doorLocked = true;
             DataManagerScript.instance.doorAttempts++;

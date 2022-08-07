@@ -12,6 +12,7 @@ public class DataManagerScript : MonoBehaviour
     public int catsFound = 0;
     public int cabbagesCollected = 0;
     public int tomatoesCollected = 0;
+    public int planksPlaced = 0;
 
     [Header("Task Variables")]
     public int tasksComplete;
@@ -22,6 +23,8 @@ public class DataManagerScript : MonoBehaviour
     public bool doorClosed;
     public bool doorLocked;
     public int doorAttempts;
+
+    public bool withinTargetRange;
 
 
     [Header("JSON Data")]
@@ -87,6 +90,7 @@ public class DataManagerScript : MonoBehaviour
         gameData.cabbagesCollected = cabbagesCollected;
         gameData.tomatosCollected = tomatoesCollected;
         gameData.catsCollected = catsFound;
+        gameData.planksPlacedOnTarget = planksPlaced;
         gameData.itemsInteractedWith = interactables;
         SetDataToJSON();
     }

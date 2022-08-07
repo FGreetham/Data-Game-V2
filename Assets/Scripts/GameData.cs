@@ -21,6 +21,7 @@ public class GameData
     public int tomatosCollected;
     public int cabbagesCollected;
     public int catsCollected;
+    public int planksPlacedOnTarget;
 
     public List<string> itemsInteractedWith;
 

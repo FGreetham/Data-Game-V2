@@ -13,7 +13,7 @@ public class StartScene : MonoBehaviour
     void Start()
     {
         sceneText.GetComponent<TMP_Text>().text = "Hi " + PlayerPrefs.GetString("PlayerName") + ", I need your help. I left my shed unlocked and there's a storm on the way. \n"  +
-            "Could you check it for me? It's the one straight ahead as you go into the garden. \nThe password is 1111.";
+            "Could you check it for me? It's the one straight ahead as you go into the garden. \nThe password is Garden247.";
 
     }
 
