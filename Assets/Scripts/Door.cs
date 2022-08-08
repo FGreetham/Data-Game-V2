@@ -65,7 +65,7 @@ public class Door : MonoBehaviour
     //Lock door command
     public void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Trigger")
+        if (other.tag == "Trigger" && DataManagerScript.instance.doorClosed == false)
         {
             DataManagerScript.instance.doorClosed = true;
             cameraControls.enabled = false;
@@ -78,10 +78,10 @@ public class Door : MonoBehaviour
     {
         if (inputField.GetComponent<TMP_InputField>().text == "Garden247")
         {
+            lockDoor.SetActive(false);
             DataManagerScript.instance.doorLocked = true;
             DataManagerScript.instance.doorAttempts++;
             cameraControls.enabled = true;
-            lockDoor.SetActive(false);
             StartCoroutine("SuccessMsg");
             this.enabled = false;
         }
@@ -115,7 +115,6 @@ public class Door : MonoBehaviour
         onScreen.SetActive(true);
         yield return new WaitForSeconds(2);
         onScreen.SetActive(false);
-        //Might need a little bit of tweaking to be sleaker
     }
 
     IEnumerator SuccessMsg()
@@ -123,6 +122,7 @@ public class Door : MonoBehaviour
         successMsg.SetActive(true);
         yield return new WaitForSeconds(2);
         successMsg.SetActive(false);
+        this.enabled = false;
     }
 
     //Start the variables so the door will close on first click.
